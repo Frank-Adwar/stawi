@@ -1,0 +1,1558 @@
+<title>Sitawi</title>
+<style>
+  :root {
+    --bg:#FFFFFF; --bg-2:#F0F5F1; --card:#FFFFFF;
+    --ink-strong:#132A20; --ink:#3D4A43; --ink-2:#78857E; --ink-3:#AEB8B2;
+    --line:#E6ECE8; --line-env:#D7DED9; --line-motif:#9AA39D; --fill-motif:#EDF0EE;
+    --accent:#0F9D63; --accent-press:#0C7F50; --accent-soft:#E1F4EA;
+    --warm:#DA8A22; --warm-soft:#FAEDD1;
+    --red:#D0453B; --red-soft:#FDECEA; --orange:#B8791C; --green:#0F9D63;
+    --bubble-in:#EAF0EC; --tab-bg:#FFFFFF; --stage:#C7CEC9;
+    --font-serif:"Poppins",Georgia,serif;
+    --font-round:"Poppins",ui-rounded,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
+    --font-sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --sh-card:0 1px 2px rgba(16,40,28,.04),0 6px 20px rgba(16,40,28,.06);
+    --sh-tab:0 6px 24px rgba(16,40,28,.10),0 2px 6px rgba(16,40,28,.06);
+    --sh-cta:0 8px 20px rgba(15,157,99,.28);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0E1512;--bg-2:#18201C;--card:#161E1A;--ink-strong:#EAF2EC;--ink:#C4D0C9;--ink-2:#8A968F;--ink-3:#5A655E;
+    --line:#243029;--line-env:#333E37;--line-motif:#6E7873;--fill-motif:#212A25;
+    --accent:#26C07E;--accent-press:#1FA86C;--accent-soft:#12291F;--warm:#EBA94A;--warm-soft:#2E2413;--red:#F0685C;--red-soft:#2A1616;--orange:#EBA94A;--green:#26C07E;
+    --bubble-in:#1E2823;--tab-bg:#18201C;--stage:#060A08;
+    --sh-card:0 1px 2px rgba(0,0,0,.4);--sh-tab:0 6px 24px rgba(0,0,0,.5);--sh-cta:0 8px 22px rgba(38,192,126,.26);
+  }}
+  :root[data-theme="light"]{--bg:#FFF;--bg-2:#F0F5F1;--card:#FFF;--ink-strong:#132A20;--ink:#3D4A43;--ink-2:#78857E;--ink-3:#AEB8B2;--line:#E6ECE8;--line-env:#D7DED9;--line-motif:#9AA39D;--fill-motif:#EDF0EE;--accent:#0F9D63;--accent-press:#0C7F50;--accent-soft:#E1F4EA;--warm:#DA8A22;--warm-soft:#FAEDD1;--red:#D0453B;--red-soft:#FDECEA;--orange:#B8791C;--green:#0F9D63;--bubble-in:#EAF0EC;--tab-bg:#FFF;--stage:#C7CEC9;--sh-card:0 1px 2px rgba(16,40,28,.04),0 6px 20px rgba(16,40,28,.06);--sh-tab:0 6px 24px rgba(16,40,28,.10),0 2px 6px rgba(16,40,28,.06);--sh-cta:0 8px 20px rgba(15,157,99,.28);}
+  :root[data-theme="dark"]{--bg:#0E1512;--bg-2:#18201C;--card:#161E1A;--ink-strong:#EAF2EC;--ink:#C4D0C9;--ink-2:#8A968F;--ink-3:#5A655E;--line:#243029;--line-env:#333E37;--line-motif:#6E7873;--fill-motif:#212A25;--accent:#26C07E;--accent-press:#1FA86C;--accent-soft:#12291F;--warm:#EBA94A;--warm-soft:#2E2413;--red:#F0685C;--red-soft:#2A1616;--orange:#EBA94A;--green:#26C07E;--bubble-in:#1E2823;--tab-bg:#18201C;--stage:#060A08;--sh-card:0 1px 2px rgba(0,0,0,.4);--sh-tab:0 6px 24px rgba(0,0,0,.5);--sh-cta:0 8px 20px rgba(38,192,126,.26);}
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;}
+  html,body{height:100%;}
+  body{background:var(--stage);font-family:var(--font-sans);display:grid;place-items:center;min-height:100vh;padding:24px;-webkit-font-smoothing:antialiased;color:var(--ink);}
+  svg{display:block;}
+  .num{font-variant-numeric:tabular-nums;}
+
+  .phone{width:390px;height:min(844px,calc(100vh - 48px));background:var(--bg);border-radius:46px;position:relative;overflow:hidden;box-shadow:0 0 0 11px #17171a,0 0 0 13px #2b2b2e,0 40px 80px rgba(0,0,0,.55);display:flex;flex-direction:column;}
+
+  .statusbar{height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 6px;font-size:15px;font-weight:600;color:var(--ink-strong);}
+  .statusbar .r{display:flex;align-items:center;gap:6px;}
+  .statusbar svg{height:12px;}
+
+  .stage{flex:1;position:relative;overflow:hidden;}
+
+  /* generic view */
+  .view{position:absolute;inset:0;display:none;flex-direction:column;}
+  .view.active{display:flex;}
+  .scroll{flex:1;overflow-y:auto;padding:4px 20px 16px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .vhead{flex:none;padding:8px 20px 10px;display:flex;align-items:center;justify-content:space-between;}
+  .vhead .lt{font-family:var(--font-round);font-size:28px;font-weight:700;color:var(--ink-strong);letter-spacing:-.01em;}
+  .vhead .sub{font-size:13px;color:var(--ink-2);margin-top:1px;}
+  .pfp{width:38px;height:38px;border-radius:50%;background:var(--bg-2);color:var(--ink-2);display:grid;place-items:center;font-family:var(--font-round);font-weight:700;font-size:15px;border:0;cursor:pointer;}
+
+  /* status hero (home) */
+  .status{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 20px;box-shadow:var(--sh-card);}
+  .status .toppill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--orange);background:var(--warm-soft);border-radius:20px;padding:5px 11px;}
+  .status .toppill .dot{width:6px;height:6px;border-radius:50%;background:var(--warm);}
+  .status .k{font-size:13px;color:var(--ink-2);font-weight:500;margin-top:14px;}
+  .status .big{font-family:var(--font-round);font-size:36px;font-weight:800;letter-spacing:-.02em;color:var(--ink-strong);margin-top:2px;}
+  .status .big .cur{font-size:17px;font-weight:700;color:var(--ink-2);margin-right:3px;}
+  .status .est{font-size:12px;font-weight:600;color:var(--ink-3);letter-spacing:0;}
+  .status .split{display:flex;gap:14px;margin-top:16px;border-top:1px solid var(--line);padding-top:14px;}
+  .status .split div{flex:1;}
+  .status .split .kk{font-size:12px;color:var(--ink-2);}
+  .status .split .vv{font-size:17px;font-weight:700;margin-top:2px;color:var(--ink-strong);}
+  .status .split .vv.green{color:var(--green);}
+  .status .split .vv.accent{color:var(--orange);}
+  .status .toppill.ok{color:var(--accent);background:var(--accent-soft);}
+  .status .toppill.ok .dot{background:var(--accent);}
+  /* caught-up empty state */
+  .caught{background:var(--accent-soft);border-radius:18px;padding:26px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .caught .ring{width:54px;height:54px;border-radius:50%;background:var(--accent);display:grid;place-items:center;margin-bottom:6px;box-shadow:var(--sh-cta);}
+  .caught .ring svg{width:28px;height:28px;color:#fff;}
+  .caught .t{font-family:var(--font-round);font-size:18px;font-weight:700;color:var(--ink-strong);}
+  .caught .s{font-size:13.5px;color:var(--ink);opacity:.85;max-width:27ch;line-height:1.4;}
+  /* preview-state demo control */
+  .demo{display:flex;align-items:center;gap:9px;margin:18px 2px -4px;}
+  .demo .lbl{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);}
+  .demo .seg{display:inline-flex;background:var(--bg-2);border-radius:9px;padding:2px;}
+  .demo .seg button{border:0;background:transparent;font-family:var(--font-sans);font-size:12.5px;font-weight:600;color:var(--ink-2);padding:5px 12px;border-radius:7px;cursor:pointer;}
+  .demo .seg button.active{background:var(--card);color:var(--ink-strong);box-shadow:var(--sh-card);}
+
+  .sec-title{font-family:var(--font-round);font-size:18px;font-weight:700;color:var(--ink-strong);margin:24px 2px 12px;}
+
+  /* action card */
+  .action{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;box-shadow:var(--sh-card);margin-bottom:10px;cursor:pointer;}
+  .action .ib{width:42px;height:42px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none;}
+  .action .ib svg{width:22px;height:22px;}
+  .action .body{flex:1;min-width:0;}
+  .action .t{font-size:15.5px;font-weight:600;color:var(--ink-strong);}
+  .action .s{font-size:13px;color:var(--ink-2);margin-top:1px;}
+  .action .badge{font-size:12px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap;}
+  .badge.red{background:var(--accent);color:#fff;}
+  .badge.orange{background:var(--warm-soft);color:var(--orange);}
+
+  /* huduma alert cards */
+  .alert-card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--sh-card);margin-bottom:10px;opacity:0;transform:translateY(8px);animation:arise .4s ease forwards;}
+  @keyframes arise{to{opacity:1;transform:none;}}
+  .alert-card.sev-critical{border-left-color:var(--red);}
+  .alert-card.sev-warning{border-left-color:var(--warm);}
+  .alert-card.sev-info{border-left-color:var(--accent);}
+  .a-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .sev-pill{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:5px;}
+  .sev-critical .sev-pill{color:var(--red);background:var(--red-soft);}
+  .sev-warning .sev-pill{color:var(--orange);background:var(--warm-soft);}
+  .sev-info .sev-pill{color:var(--accent);background:var(--accent-soft);}
+  .sev-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+  .sev-critical .sev-dot{animation:apulse 1.6s infinite;}
+  @keyframes apulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .a-days{margin-left:auto;font-size:12px;font-weight:600;color:var(--ink-2);}
+  .a-days.soon{color:var(--red);}
+  .a-ttl{font-family:var(--font-round);font-size:15.5px;font-weight:700;color:var(--ink-strong);line-height:1.25;margin-bottom:5px;}
+  .a-body{font-size:13.5px;line-height:1.5;color:var(--ink);}
+  .a-body.alt{color:var(--ink-2);font-size:12.5px;margin-top:4px;}
+  .a-dl{font-size:12px;color:var(--ink-2);margin:10px 0;display:flex;align-items:center;gap:5px;}
+  .a-dl svg{width:13px;height:13px;flex:none;}
+  .a-go{display:block;text-align:center;text-decoration:none;background:var(--accent);color:#fff;font-family:var(--font-round);font-size:14.5px;font-weight:700;letter-spacing:.02em;padding:13px;border-radius:12px;box-shadow:var(--sh-cta);}
+  .a-go:active{background:var(--accent-press);}
+  .a-src{margin-top:9px;font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:4px;line-height:1.35;}
+  .a-src .vf{color:var(--accent);font-weight:600;}
+  .alert-hdr{display:flex;align-items:center;justify-content:space-between;}
+  .al-toggle{display:inline-flex;background:var(--bg-2);border-radius:7px;padding:2px;}
+  .al-toggle button{border:0;background:transparent;font-family:var(--font-sans);font-size:11px;font-weight:700;color:var(--ink-3);padding:3px 8px;border-radius:5px;cursor:pointer;}
+  .al-toggle button.aon{background:var(--card);color:var(--ink-strong);box-shadow:var(--sh-card);}
+  @media (prefers-reduced-motion:reduce){.alert-card{animation:none;opacity:1;transform:none;}.sev-dot{animation:none;}}
+
+  /* security detail page */
+  .sec-block{margin-bottom:18px;}
+  .sec-block .sb-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .sec-block .sb-num{width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--font-round);font-weight:800;font-size:13px;display:grid;place-items:center;flex:none;}
+  .sec-block .sb-title{font-family:var(--font-round);font-size:16px;font-weight:700;color:var(--ink-strong);}
+  .sec-block .sb-body{font-size:13.5px;color:var(--ink);line-height:1.55;padding-left:38px;}
+  .sec-block .sb-body ul{margin:6px 0 0;padding-left:18px;}
+  .sec-block .sb-body li{margin-bottom:4px;}
+  .sec-block .sb-body strong{color:var(--ink-strong);font-weight:600;}
+  .sec-block .sb-body code{font-size:12px;background:var(--bg-2);padding:1px 5px;border-radius:4px;font-family:var(--font-sans);}
+  .sec-block .sb-warn{display:flex;align-items:flex-start;gap:8px;background:var(--warm-soft);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:12.5px;color:var(--orange);line-height:1.4;}
+  .sec-block .sb-warn svg{width:16px;height:16px;flex:none;margin-top:1px;}
+  .dpa-badge{display:inline-flex;align-items:center;gap:7px;background:var(--accent-soft);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;color:var(--accent);margin:8px 0 0 38px;}
+  .dpa-badge svg{width:16px;height:16px;flex:none;}
+
+  /* applies-to-you list */
+  .list{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--sh-card);}
+  .row{position:relative;display:flex;align-items:center;gap:13px;padding:13px 15px;cursor:pointer;}
+  .row:not(:last-child)::after{content:"";position:absolute;left:50px;right:0;bottom:0;height:1px;background:var(--line);}
+  .row .g{width:22px;height:22px;color:var(--ink-2);flex:none;}
+  .row .body{flex:1;min-width:0;}
+  .row .t{font-size:15.5px;font-weight:500;color:var(--ink-strong);}
+  .row .s{font-size:13px;color:var(--ink-2);margin-top:1px;}
+  .row .st{font-size:13px;font-weight:600;}
+  .st.red{color:var(--red);}.st.orange{color:var(--orange);}.st.green{color:var(--green);}.st.gray{color:var(--ink-2);}
+  .chev{width:14px;height:19px;color:var(--ink-3);flex:none;}
+
+  /* explore grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .gcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--sh-card);cursor:pointer;display:flex;flex-direction:column;}
+  .gcard .thumb{height:96px;background:var(--bg-2);border-radius:13px;margin-bottom:11px;display:grid;place-items:center;overflow:hidden;}
+  .gcard .thumb svg{width:84%;height:84%;}
+  .gcard .gt{font-family:var(--font-round);font-size:16px;font-weight:700;color:var(--ink-strong);}
+  .gcard .gs{font-size:12.5px;color:var(--ink-2);margin-top:2px;line-height:1.3;}
+
+  /* detail (lemonade page) */
+  .detail{position:absolute;inset:0;background:var(--bg);z-index:6;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;}
+  .detail.open{transform:translateX(0);}
+  .dback{flex:none;padding:8px 16px 0;}
+  .dback button{border:0;background:var(--bg-2);width:38px;height:38px;border-radius:50%;color:var(--ink);display:grid;place-items:center;cursor:pointer;}
+  .dback svg{width:20px;height:20px;}
+  .dscroll{flex:1;overflow-y:auto;padding:2px 26px 20px;display:flex;flex-direction:column;align-items:center;}
+  .dscroll::-webkit-scrollbar{width:0;}
+  .cat-title{font-family:var(--font-round);font-size:27px;font-weight:700;letter-spacing:-.01em;color:var(--ink-strong);margin-top:2px;}
+  .hero{width:100%;}.hero svg{width:100%;height:auto;}
+  .headline{font-family:var(--font-round);font-size:24px;font-weight:600;line-height:1.22;color:var(--ink);text-align:center;text-wrap:balance;margin:2px 0 20px;max-width:15ch;}
+  .features{display:flex;justify-content:center;gap:22px;margin-bottom:24px;}
+  .feature{display:flex;flex-direction:column;align-items:center;gap:9px;width:90px;}
+  .feature .circle{width:78px;height:78px;border-radius:50%;background:var(--bg-2);display:grid;place-items:center;}
+  .feature .circle svg{width:38px;height:38px;color:var(--line-motif);}
+  .feature span{font-size:13.5px;color:var(--ink);text-align:center;line-height:1.2;}
+  .cta{width:100%;max-width:320px;border:0;background:var(--accent);color:#fff;font-family:var(--font-round);font-size:16px;font-weight:700;letter-spacing:.05em;padding:19px;border-radius:16px;cursor:pointer;box-shadow:var(--sh-cta);}
+  .cta:active{background:var(--accent-press);}
+  .bullets{margin-top:16px;display:flex;flex-direction:column;gap:9px;}
+  .bullet{display:flex;align-items:center;gap:10px;font-size:15.5px;color:var(--ink);}
+  .bullet .chk{width:21px;height:21px;border-radius:50%;background:var(--accent);display:grid;place-items:center;flex:none;}
+  .bullet .chk svg{width:12px;height:12px;color:#fff;}
+
+  /* ask */
+  .thread{flex:1;overflow-y:auto;padding:14px 16px 6px;display:flex;flex-direction:column;gap:8px;}
+  .thread::-webkit-scrollbar{width:0;}
+  .b{max-width:82%;font-size:15px;line-height:1.38;padding:9px 14px;border-radius:20px;}
+  .b.in{align-self:flex-start;background:var(--bubble-in);color:var(--ink-strong);border-bottom-left-radius:6px;}
+  .b.out{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:6px;}
+  .b.in+.b.in,.b.out+.b.out{margin-top:-4px;}
+  .b .amt{font-weight:700;}
+  .cite{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--accent);margin:1px 0 0 6px;}
+  .cite svg{width:13px;height:13px;}
+  .verif{align-self:flex-start;font-size:11.5px;color:var(--ink-3);margin:0 0 4px 6px;}
+  .qr{flex:none;display:flex;gap:8px;overflow-x:auto;padding:8px 16px;}
+  .qr::-webkit-scrollbar{height:0;}
+  .qr button{flex:none;border:1.5px solid var(--line);background:transparent;color:var(--accent);font-family:var(--font-sans);font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:18px;cursor:pointer;white-space:nowrap;}
+  .composer{flex:none;display:flex;align-items:center;gap:10px;padding:4px 16px 12px;}
+  .composer input{flex:1;border:1.5px solid var(--line);background:var(--bg-2);border-radius:22px;padding:12px 16px;font-family:var(--font-sans);font-size:15px;color:var(--ink-strong);outline:none;}
+  .composer input:focus-visible{border-color:var(--accent);}
+  .composer .send{width:44px;height:44px;flex:none;border:0;border-radius:50%;background:var(--accent);color:#fff;cursor:pointer;display:grid;place-items:center;}
+  .composer .send svg{width:20px;height:20px;}
+  .disc{flex:none;text-align:center;font-size:11px;color:var(--ink-3);padding:4px 20px 0;}
+  .typing{align-self:flex-start;background:var(--bubble-in);border-bottom-left-radius:6px;padding:12px 14px;border-radius:20px;display:inline-flex;gap:4px;}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--ink-3);animation:blink 1.2s infinite;}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.typing i{animation:none;}}
+  .handoff{align-self:flex-start;max-width:86%;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;box-shadow:var(--sh-card);margin-top:2px;}
+  .handoff p{font-size:13px;color:var(--ink-2);line-height:1.4;margin:0 0 10px;}
+  .handoff button{border:0;background:var(--accent);color:#fff;font-family:var(--font-round);font-size:13.5px;font-weight:700;padding:9px 14px;border-radius:11px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;}
+  .handoff button svg{width:15px;height:15px;}
+
+  /* money */
+  .savehero{text-align:center;padding:18px 0 6px;}
+  .savehero .k{font-size:14px;color:var(--ink-2);}
+  .savehero .big{font-family:var(--font-round);font-size:44px;font-weight:800;color:var(--green);letter-spacing:-.02em;margin-top:4px;}
+  .savehero .big .cur{font-size:20px;color:var(--ink-2);font-weight:700;margin-right:3px;}
+  .savehero .f{font-size:13px;color:var(--ink-3);margin-top:2px;}
+  .mrow{display:flex;align-items:center;gap:12px;padding:13px 15px;}
+  .mrow:not(:last-child){border-bottom:1px solid var(--line);}
+  .mrow .g{width:20px;height:20px;color:var(--ink-2);}
+  .mrow .body{flex:1;}
+  .mrow .t{font-size:15px;font-weight:500;color:var(--ink-strong);}
+  .mrow .s{font-size:12.5px;color:var(--ink-2);}
+  .mrow .v{font-size:15px;font-weight:700;color:var(--green);}
+
+  /* profile */
+  .plist .row .t{font-weight:500;}
+  .trust{display:inline-flex;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:20px;}
+
+  /* tab bar */
+  .tabwrap{flex:none;padding:6px 12px 8px;}
+  .tabbar{display:flex;justify-content:space-around;align-items:flex-end;background:var(--tab-bg);border-radius:30px;padding:9px 8px;box-shadow:var(--sh-tab);}
+  .tab{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--ink-2);padding:2px 0;}
+  .tab svg{width:24px;height:24px;}
+  .tab span{font-size:10.5px;font-weight:600;letter-spacing:.01em;}
+  .tab.active{color:var(--accent);}
+  .tab.ask{color:#fff;}
+  .tab.ask .askbtn{width:52px;height:52px;border-radius:50%;background:var(--accent);display:grid;place-items:center;margin-top:-22px;box-shadow:var(--sh-cta);border:4px solid var(--tab-bg);}
+  .tab.ask .askbtn svg{width:25px;height:25px;}
+  .tab.ask span{color:var(--accent);}
+  .homebar{width:130px;height:5px;border-radius:3px;background:var(--ink-3);margin:8px auto 0;opacity:.5;}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  @media (max-width:440px){body{padding:0;background:var(--bg);}.phone{width:100vw;height:100vh;border-radius:0;box-shadow:none;}}
+
+  .env-s{stroke:var(--line-env);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .env-c{fill:var(--bg);stroke:var(--line-env);stroke-width:2;}
+  .env-g{fill:var(--bg-2);opacity:.55;}
+  .m-s{stroke:var(--line-motif);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .m-f{fill:var(--fill-motif);stroke:var(--line-motif);stroke-width:2.4;stroke-linejoin:round;}
+
+  /* ===== layers + onboarding ===== */
+  .onboard{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .applayer{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .ob-top{flex:none;display:flex;align-items:center;gap:12px;padding:8px 20px 4px;}
+  .ob-back{width:34px;height:34px;border:0;background:var(--bg-2);border-radius:50%;color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none;visibility:hidden;}
+  .ob-back svg{width:19px;height:19px;}
+  .ob-bar{flex:1;height:6px;background:var(--bg-2);border-radius:3px;overflow:hidden;}
+  .ob-bar>i{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .35s ease;}
+  .ob-skip{border:0;background:transparent;color:var(--ink-2);font-family:var(--font-sans);font-size:13.5px;font-weight:600;cursor:pointer;flex:none;visibility:hidden;}
+  .ob-body{flex:1;overflow-y:auto;padding:14px 24px 8px;display:flex;flex-direction:column;}
+  .ob-body::-webkit-scrollbar{width:0;}
+  .ob-ava{width:46px;height:46px;border-radius:13px;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:var(--font-round);font-weight:800;font-size:20px;box-shadow:var(--sh-cta);}
+  .ob-q{font-family:var(--font-round);font-size:23px;font-weight:700;line-height:1.22;color:var(--ink-strong);letter-spacing:-.01em;margin:16px 0 6px;text-wrap:balance;}
+  .ob-help{font-size:14px;color:var(--ink-2);line-height:1.4;margin-bottom:20px;}
+  .ob-chips{display:flex;flex-direction:column;gap:10px;}
+  .ob-chip{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:15px 16px;font-family:var(--font-sans);font-size:15.5px;font-weight:500;color:var(--ink-strong);cursor:pointer;text-align:left;transition:border-color .12s,background .12s;}
+  .ob-chip .tick{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;color:transparent;margin-left:auto;}
+  .ob-chip .tick svg{width:13px;height:13px;}
+  .ob-chip.sel{border-color:var(--accent);background:var(--accent-soft);}
+  .ob-chip.sel .tick{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .ob-foot{flex:none;padding:12px 24px 12px;}
+  .ob-cta{width:100%;border:0;background:var(--accent);color:#fff;font-family:var(--font-round);font-size:16px;font-weight:700;letter-spacing:.02em;padding:17px;border-radius:15px;cursor:pointer;box-shadow:var(--sh-cta);}
+  .ob-cta:disabled{background:var(--bg-2);color:var(--ink-3);box-shadow:none;cursor:default;}
+  .ob-cta:not(:disabled):active{background:var(--accent-press);}
+  .intro{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;align-items:center;gap:8px;}
+  .intro .ob-ava{width:64px;height:64px;border-radius:18px;font-size:28px;margin-bottom:8px;}
+  .intro h1{font-family:var(--font-round);font-size:28px;font-weight:800;color:var(--ink-strong);letter-spacing:-.02em;}
+  .intro p{font-size:15px;color:var(--ink-2);line-height:1.45;max-width:30ch;}
+  .disclose{margin-top:14px;display:flex;align-items:center;gap:9px;background:var(--bg-2);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--ink);text-align:left;line-height:1.4;}
+  .disclose svg{width:20px;height:20px;color:var(--accent);flex:none;}
+  .consent h2{font-family:var(--font-round);font-size:22px;font-weight:700;color:var(--ink-strong);margin:14px 0 8px;}
+  .consent .lead{font-size:14.5px;color:var(--ink-2);line-height:1.5;margin-bottom:16px;}
+  .promise{display:flex;gap:12px;padding:13px 0;border-top:1px solid var(--line);}
+  .promise svg{width:22px;height:22px;color:var(--accent);flex:none;margin-top:1px;}
+  .promise b{font-size:14.5px;color:var(--ink-strong);font-weight:600;display:block;}
+  .promise span{font-size:13px;color:var(--ink-2);line-height:1.4;}
+  .link{color:var(--accent);font-weight:600;text-decoration:none;}
+  .building{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;}
+  .spinner{width:52px;height:52px;border-radius:50%;border:4px solid var(--accent-soft);border-top-color:var(--accent);animation:spin 0.9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .building p{font-family:var(--font-round);font-size:18px;font-weight:600;color:var(--ink-strong);}
+  .building small{font-size:13.5px;color:var(--ink-2);}
+  @media (prefers-reduced-motion:reduce){.spinner{animation:none;}}
+  .reveal h2{font-family:var(--font-round);font-size:24px;font-weight:800;color:var(--ink-strong);letter-spacing:-.01em;margin:14px 0 4px;text-wrap:balance;}
+  .reveal .rsub{font-size:14px;color:var(--ink-2);margin-bottom:16px;}
+  .olist{display:flex;flex-direction:column;gap:8px;}
+  .oitem{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;box-shadow:var(--sh-card);}
+  .oitem .oi{width:22px;height:22px;flex:none;}
+  .oitem .body{flex:1;min-width:0;}
+  .oitem .t{font-size:15px;font-weight:600;color:var(--ink-strong);}
+  .oitem .s{font-size:12.5px;color:var(--ink-2);margin-top:1px;}
+  .oitem .ost{font-size:12.5px;font-weight:700;flex:none;}
+  .ost.g{color:var(--green);}.ost.a{color:var(--orange);}
+
+  /* ===== financial pipeline ===== */
+  .fin-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .fin-stat{background:var(--accent-soft);border-radius:14px;padding:12px 14px;}
+  .fin-stat .k{font-size:11px;color:var(--ink-2);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  .fin-stat .v{font-size:22px;font-weight:800;color:var(--ink-strong);font-family:var(--font-round);margin-top:2px;font-variant-numeric:tabular-nums;}
+  .fin-stat .v .cur{font-size:13px;font-weight:600;color:var(--ink-2);}
+  .fin-stat.warn{background:var(--warm-soft);}
+  .fin-tabs{display:flex;background:var(--bg-2);border-radius:12px;padding:3px;margin-bottom:12px;}
+  .fin-tab{flex:1;border:0;background:transparent;font-family:var(--font-sans);font-size:12.5px;font-weight:600;color:var(--ink-2);padding:9px 4px;border-radius:9px;cursor:pointer;}
+  .fin-tab.active{background:var(--card);color:var(--ink-strong);box-shadow:var(--sh-card);}
+  .fin-input{display:none;}
+  .fin-input.active{display:block;}
+  .mpesa-box{width:100%;min-height:88px;border:1.5px dashed var(--line);border-radius:14px;padding:12px;font-family:var(--font-sans);font-size:13.5px;color:var(--ink);background:var(--bg-2);resize:none;outline:none;line-height:1.4;}
+  .mpesa-box:focus{border-color:var(--accent);border-style:solid;background:var(--card);}
+  .mpesa-box::placeholder{color:var(--ink-3);font-size:13px;}
+  .parse-result{background:var(--accent-soft);border-radius:14px;padding:12px 14px;margin-top:10px;display:none;}
+  .parse-result.show{display:block;}
+  .parse-row{display:flex;justify-content:space-between;padding:3px 0;font-size:13px;}
+  .parse-row .pl{color:var(--ink-2);}
+  .parse-row .pv{font-weight:600;color:var(--ink-strong);}
+  .parse-actions{display:flex;gap:8px;margin-top:10px;}
+  .parse-actions button{flex:1;border:0;padding:10px;border-radius:10px;font-family:var(--font-sans);font-size:13px;font-weight:600;cursor:pointer;}
+  .btn-save{background:var(--accent);color:#fff;}
+  .btn-cancel{background:var(--bg-2);color:var(--ink);}
+  .manual-form{display:flex;flex-direction:column;gap:10px;}
+  .fin-field{display:flex;flex-direction:column;gap:4px;}
+  .fin-field label{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em;}
+  .fin-field input,.fin-field select{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-family:var(--font-sans);font-size:14px;color:var(--ink-strong);background:var(--card);outline:none;-webkit-appearance:none;}
+  .fin-field input:focus,.fin-field select:focus{border-color:var(--accent);}
+  .fin-row{display:flex;gap:8px;}
+  .fin-row .fin-field{flex:1;}
+  .csv-drop{border:1.5px dashed var(--line);border-radius:14px;padding:24px 14px;text-align:center;cursor:pointer;background:var(--bg-2);}
+  .csv-drop:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .csv-drop svg{width:28px;height:28px;color:var(--ink-3);margin-bottom:4px;}
+  .csv-drop p{font-size:13px;color:var(--ink-2);margin:4px 0 0;}
+  .csv-drop input{display:none;}
+  .txn-list{margin-top:12px;}
+  .txn{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .txn:last-child{border-bottom:0;}
+  .txn .ti{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;font-size:15px;}
+  .txn .ti.out{background:var(--red-soft);color:var(--red);}
+  .txn .ti.in{background:var(--accent-soft);color:var(--accent);}
+  .txn .mid{flex:1;min-width:0;}
+  .txn .mid .t{font-size:13.5px;font-weight:600;color:var(--ink-strong);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .txn .mid .s{font-size:11.5px;color:var(--ink-2);margin-top:1px;display:flex;align-items:center;gap:4px;}
+  .txn .amt{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .txn .amt.out{color:var(--red);}
+  .txn .amt.in{color:var(--accent);}
+  .tag-ded{font-size:9.5px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:5px;font-weight:600;}
+  .tag-etims{font-size:9.5px;background:var(--warm-soft);color:var(--warm);padding:1px 5px;border-radius:5px;font-weight:600;}
+  .export-bar{display:flex;gap:8px;margin:14px 0 4px;}
+  .export-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1.5px solid var(--line);border-radius:12px;padding:11px;font-family:var(--font-sans);font-size:12.5px;font-weight:600;color:var(--ink-strong);background:var(--card);cursor:pointer;}
+  .export-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .export-btn svg{width:16px;height:16px;}
+  .cat-bars{margin-top:4px;}
+  .cat-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .cat-bar .cl{font-size:12px;color:var(--ink);width:72px;flex:none;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
+  .cat-bar .bar{flex:1;height:7px;background:var(--bg-2);border-radius:4px;overflow:hidden;}
+  .cat-bar .bar i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .4s ease;}
+  .cat-bar .cv{font-size:12px;font-weight:600;color:var(--ink-strong);min-width:68px;text-align:right;font-variant-numeric:tabular-nums;}
+  .empty-money{text-align:center;padding:28px 16px;color:var(--ink-2);font-size:14px;line-height:1.5;}
+  .empty-money svg{width:40px;height:40px;color:var(--ink-3);margin-bottom:8px;}
+  .txn-count{font-size:12px;color:var(--ink-3);text-align:center;margin-top:6px;}
+
+  /* explore detail content */
+  .dtag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;border-radius:20px;padding:4px 10px;margin:4px 0 14px;}
+  .dtag.green{background:var(--accent-soft);color:var(--accent);}
+  .dtag.orange{background:var(--warm-soft);color:var(--orange);}
+  .dsec{width:100%;text-align:left;margin-top:18px;}
+  .dsec-t{font-family:var(--font-round);font-size:16px;font-weight:700;color:var(--ink-strong);margin-bottom:8px;}
+  .dtable{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .dtable th{text-align:left;font-weight:600;color:var(--ink-2);padding:6px 8px;border-bottom:1.5px solid var(--line);font-size:12px;text-transform:uppercase;letter-spacing:.04em;}
+  .dtable td{padding:7px 8px;border-bottom:1px solid var(--line);color:var(--ink);}
+  .dtable tr:last-child td{border-bottom:0;}
+  .dtable .hi{font-weight:700;color:var(--ink-strong);}
+  .dtable .accent{color:var(--accent);font-weight:700;}
+  .dinfo{background:var(--bg-2);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--ink);line-height:1.5;width:100%;text-align:left;margin-top:10px;}
+  .dinfo b{color:var(--ink-strong);}
+  .dwarn{background:var(--warm-soft);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--orange);line-height:1.5;width:100%;text-align:left;margin-top:10px;display:flex;align-items:flex-start;gap:8px;}
+  .dwarn svg{width:16px;height:16px;flex:none;margin-top:2px;}
+  .dkey{display:flex;flex-wrap:wrap;gap:8px;width:100%;margin-top:6px;}
+  .dkey-item{flex:1;min-width:45%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:center;}
+  .dkey-item .dv{font-family:var(--font-round);font-size:20px;font-weight:800;color:var(--ink-strong);margin-bottom:2px;}
+  .dkey-item .dl{font-size:11px;color:var(--ink-2);}
+  .dcite{margin-top:14px;font-size:11.5px;color:var(--ink-3);width:100%;text-align:left;line-height:1.5;padding-top:10px;border-top:1px solid var(--line);}
+  .dcite a{color:var(--accent);font-weight:600;text-decoration:none;}
+  .dapplies{background:var(--accent-soft);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;width:100%;text-align:left;margin-top:12px;}
+  .dapplies b{color:var(--accent);font-weight:700;}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="env" viewBox="0 0 390 200">
+    <path class="env-g" d="M-10 145 C 80 137 150 141 210 140 S 340 147 400 142 L400 200 L-10 200 Z"/>
+    <path class="env-s" d="M-10 145 C 80 137 150 141 210 140 S 340 147 400 142"/>
+    <g><rect class="env-c" x="42" y="114" width="6" height="32" rx="3"/><circle class="env-c" cx="45" cy="105" r="21"/></g>
+    <g><rect class="env-c" x="342" y="116" width="6" height="30" rx="3"/><circle class="env-c" cx="345" cy="107" r="18"/></g>
+  </symbol>
+  <symbol id="m-tax" viewBox="0 0 390 200">
+    <rect class="m-f" x="150" y="42" width="80" height="94" rx="8"/>
+    <line class="m-s" x1="164" y1="62" x2="216" y2="62"/><line class="m-s" x1="164" y1="78" x2="216" y2="78"/><line class="m-s" x1="164" y1="94" x2="198" y2="94"/>
+    <circle class="env-c" cx="222" cy="112" r="16" style="fill:var(--bg)"/><path class="m-s" d="M215 112 l5 5 9 -11"/>
+    <ellipse class="m-f" cx="150" cy="140" rx="28" ry="9"/><ellipse class="m-f" cx="150" cy="131" rx="28" ry="9"/>
+  </symbol>
+  <symbol id="m-biz" viewBox="0 0 390 200">
+    <rect class="m-f" x="152" y="80" width="86" height="60" rx="4"/>
+    <path class="m-f" d="M146 60 h98 l-6 22 h-86 z"/>
+    <path class="m-s" d="M152 82 v-2 M170 82 l3 -22 M195 82 v-22 M220 82 l-3 -22 M238 82 v-2"/>
+    <rect class="env-c" x="182" y="104" width="26" height="36" rx="2" style="fill:var(--bg)"/>
+    <path class="m-s" d="M140 60 q55 -20 110 0"/>
+  </symbol>
+  <symbol id="m-health" viewBox="0 0 390 200">
+    <path class="m-f" d="M195 140 C 152 112 154 76 178 72 c 12 -2 17 8 17 8 s 5 -10 17 -8 c 24 4 26 40 -17 68 z"/>
+    <path style="stroke:var(--bg);stroke-width:6;fill:none;stroke-linecap:round" d="M195 92 v24 M183 104 h24"/>
+    <path class="m-s" d="M195 92 v24 M183 104 h24"/>
+  </symbol>
+  <symbol id="m-house" viewBox="0 0 390 200">
+    <path class="m-f" d="M156 100 v40 h78 v-40"/>
+    <path class="m-f" d="M146 102 l49 -38 49 38 z"/>
+    <rect class="env-c" x="183" y="114" width="24" height="26" rx="2" style="fill:var(--bg)"/>
+  </symbol>
+  <symbol id="m-save" viewBox="0 0 390 200">
+    <ellipse class="m-f" cx="196" cy="106" rx="44" ry="34"/>
+    <path class="m-f" d="M230 88 q15 -6 15 10 q0 11 -11 11 z"/>
+    <circle class="m-s" cx="181" cy="99" r="4" style="fill:var(--line-motif)"/>
+    <line class="m-s" x1="189" y1="70" x2="203" y2="79"/>
+    <path class="m-s" d="M172 138 v8 M210 138 v8"/><line class="m-s" x1="189" y1="82" x2="205" y2="82"/>
+  </symbol>
+</defs></svg>
+
+<div class="phone">
+  <div class="statusbar">
+    <span>11:02</span>
+    <span class="r">
+      <svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+      <b style="font-size:14px">5G</b>
+      <svg viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="currentColor" stroke-opacity=".4"/><rect x="3" y="3" width="10" height="6" rx="1.5" fill="currentColor"/><rect x="23.5" y="4" width="1.5" height="4" rx=".75" fill="currentColor" fill-opacity=".5"/></svg>
+    </span>
+  </div>
+
+  <!-- ONBOARDING LAYER -->
+  <div class="onboard" id="onboard">
+    <div class="ob-top">
+      <button class="ob-back" id="ob-back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="ob-bar"><i id="ob-bar-fill"></i></div>
+      <button class="ob-skip" id="ob-skip">Skip</button>
+    </div>
+    <div class="ob-body" id="ob-stage"></div>
+    <div class="ob-foot" id="ob-foot"></div>
+    <div class="homebar"></div>
+  </div>
+
+  <!-- APP LAYER -->
+  <div class="applayer" id="applayer" style="display:none">
+  <div class="stage" id="stage">
+
+    <!-- HOME -->
+    <section class="view active" data-view="home">
+      <div class="vhead">
+        <div><div class="lt">Habari, Wanjiku</div><div class="sub">Here's where you stand today</div></div>
+        <button class="pfp" data-goto="profile">W</button>
+      </div>
+      <div class="scroll">
+        <div class="status">
+          <span class="toppill" id="homePill"><span class="dot"></span>2 things need you</span>
+          <div class="k">Estimated tax this year</div>
+          <div class="big num"><span class="cur">KES</span><span id="homeEstTax">48,200</span> <span class="est">est.</span></div>
+          <div class="split">
+            <div><div class="kk">Saved so far</div><div class="vv num green">KES <span id="homeSaved">0</span></div></div>
+            <div><div class="kk">Next deadline</div><div class="vv accent" id="homeDeadline">—</div></div>
+          </div>
+        </div>
+
+        <div class="demo">
+          <span class="lbl">Preview state</span>
+          <div class="seg" id="homeSeg">
+            <button class="active" data-state="attn">Needs attention</button>
+            <button data-state="caught">All caught up</button>
+          </div>
+        </div>
+
+        <div id="attnSection">
+          <div class="sec-title">Needs your attention</div>
+          <div id="attnList"></div>
+        </div>
+
+        <div id="caughtSection" style="display:none">
+          <div class="sec-title">Needs your attention</div>
+          <div class="caught">
+            <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg></div>
+            <div class="t">You're all caught up</div>
+            <div class="s">Nothing needs you right now. We'll nudge you on WhatsApp before anything's due.</div>
+          </div>
+        </div>
+
+        <div id="alertSection" style="display:none">
+          <div class="sec-title alert-hdr">Finance Bill 2026 <div class="al-toggle" id="alLang"><button class="aon" data-al="en">EN</button><button data-al="sw">SW</button></div></div>
+          <div id="alertList"></div>
+        </div>
+
+        <div class="sec-title">Applies to you</div>
+        <div class="list" id="appliesList"></div>
+      </div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section class="view" data-view="explore">
+      <div class="vhead"><div><div class="lt">Explore</div><div class="sub">Understand any policy, in plain language</div></div></div>
+      <div class="scroll">
+        <div class="grid">
+          <div class="gcard" data-detail="tax"><div class="thumb"><svg viewBox="116 38 152 116" preserveAspectRatio="xMidYMid meet"><use href="#m-tax"/></svg></div><div class="gt">Income Tax</div><div class="gs">Returns, what you owe, deadlines</div></div>
+          <div class="gcard" data-detail="biz"><div class="thumb"><svg viewBox="132 54 122 96" preserveAspectRatio="xMidYMid meet"><use href="#m-biz"/></svg></div><div class="gt">Business</div><div class="gs">Turnover Tax, eTIMS, deductions</div></div>
+          <div class="gcard" data-detail="health"><div class="thumb"><svg viewBox="146 66 100 84" preserveAspectRatio="xMidYMid meet"><use href="#m-health"/></svg></div><div class="gt">Health</div><div class="gs">SHIF, contributions, NSSF</div></div>
+          <div class="gcard" data-detail="house"><div class="thumb"><svg viewBox="138 58 116 92" preserveAspectRatio="xMidYMid meet"><use href="#m-house"/></svg></div><div class="gt">Housing Levy</div><div class="gs">What it is and how to remit</div></div>
+          <div class="gcard" data-detail="save"><div class="thumb"><svg viewBox="146 62 104 96" preserveAspectRatio="xMidYMid meet"><use href="#m-save"/></svg></div><div class="gt">Savings</div><div class="gs">Reliefs and deductions</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ASK -->
+    <section class="view" data-view="ask">
+      <div class="vhead"><div><div class="lt">Ask Sitawi</div><div class="sub">Answers from official KRA sources</div></div></div>
+      <div class="thread" id="thread"></div>
+      <div class="qr" id="qr"></div>
+      <div class="disc">Guidance from official KRA sources — not professional tax advice.</div>
+      <form class="composer" id="form" autocomplete="off">
+        <input id="input" placeholder="Message Sitawi" aria-label="Message"/>
+        <button class="send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+      </form>
+    </section>
+
+    <!-- MONEY -->
+    <section class="view" data-view="money">
+      <div class="vhead"><div><div class="lt">Money</div><div class="sub">Your financial pipeline</div></div></div>
+      <div class="scroll">
+        <div class="fin-stats" id="finStats">
+          <div class="fin-stat"><div class="k">Income</div><div class="v num"><span class="cur">KES </span><span id="fsIncome">0</span></div></div>
+          <div class="fin-stat"><div class="k">Expenses</div><div class="v num"><span class="cur">KES </span><span id="fsExpense">0</span></div></div>
+          <div class="fin-stat"><div class="k">Deductible</div><div class="v num" style="color:var(--green)"><span class="cur">KES </span><span id="fsDeduct">0</span></div></div>
+          <div class="fin-stat warn"><div class="k">Est. tax saved</div><div class="v num" style="color:var(--orange)"><span class="cur">KES </span><span id="fsTaxSaved">0</span></div></div>
+        </div>
+
+        <div class="sec-title" style="margin-top:6px">Add transaction</div>
+        <div class="fin-tabs" id="finTabs">
+          <button class="fin-tab active" data-ft="mpesa">M-Pesa</button>
+          <button class="fin-tab" data-ft="manual">Manual</button>
+          <button class="fin-tab" data-ft="csv">Bank CSV</button>
+        </div>
+
+        <div class="fin-input active" id="fi-mpesa">
+          <textarea class="mpesa-box" id="mpesaBox" placeholder="Paste your M-Pesa message here&#10;e.g. QH82KJ4F Confirmed. Ksh500.00 sent to JOHN KAMAU..."></textarea>
+          <div class="parse-result" id="parseResult">
+            <div id="parseRows"></div>
+            <div class="parse-actions">
+              <button class="btn-save" id="parseSave">Save transaction</button>
+              <button class="btn-cancel" id="parseCancel">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="fin-input" id="fi-manual">
+          <div class="manual-form">
+            <div class="fin-row">
+              <div class="fin-field"><label>Amount (KES)</label><input type="number" id="manAmt" placeholder="500"></div>
+              <div class="fin-field"><label>Direction</label><select id="manDir"><option value="out">Expense</option><option value="in">Income</option></select></div>
+            </div>
+            <div class="fin-field"><label>Category</label><select id="manCat">
+              <option value="fuel">Fuel &amp; transport</option><option value="airtime">Airtime &amp; data</option>
+              <option value="devices">Devices &amp; software</option><option value="food">Food &amp; meals</option>
+              <option value="rent">Rent &amp; utilities</option><option value="supplies">Business supplies</option>
+              <option value="insurance">Insurance</option><option value="health">Health &amp; medical</option>
+              <option value="tax">Tax payment</option><option value="salary">Salary / wages</option>
+              <option value="sales">Sales income</option><option value="client">Client payment</option>
+              <option value="other">Other</option>
+            </select></div>
+            <div class="fin-field"><label>Description</label><input type="text" id="manDesc" placeholder="e.g. Shell fuel, client invoice"></div>
+            <div class="fin-field"><label>Date</label><input type="date" id="manDate"></div>
+            <button class="btn-save" id="manSave" style="padding:12px;border-radius:12px;border:0;background:var(--accent);color:#fff;font-family:var(--font-sans);font-size:14px;font-weight:600;cursor:pointer">Save transaction</button>
+          </div>
+        </div>
+
+        <div class="fin-input" id="fi-csv">
+          <label class="csv-drop" id="csvDrop">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+            <p>Tap to upload bank CSV file</p>
+            <p style="font-size:11px;color:var(--ink-3)">Columns: date, description, debit, credit, balance</p>
+            <input type="file" id="csvFile" accept=".csv">
+          </label>
+          <div id="csvStatus" style="font-size:13px;color:var(--accent);text-align:center;margin-top:8px"></div>
+        </div>
+
+        <div class="export-bar">
+          <button class="export-btn" id="exportCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M8 12l4 4 4-4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>Export CSV</button>
+          <button class="export-btn" id="exportXls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 13h6M10 17h4"/></svg>Export Excel</button>
+        </div>
+
+        <div class="sec-title">By category</div>
+        <div class="cat-bars" id="catBars"></div>
+
+        <div class="sec-title">Recent transactions</div>
+        <div class="txn-list" id="txnList">
+          <div class="empty-money" id="emptyMoney">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 7l3-3h11M16 13h.01"/></svg>
+            <div>No transactions yet</div>
+            <div style="font-size:12px;margin-top:2px">Paste an M-Pesa message or add one manually</div>
+          </div>
+        </div>
+        <div class="txn-count" id="txnCount"></div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="view" data-view="profile">
+      <div class="vhead"><div><div class="lt">Profile</div><div class="sub">Wanjiku M. · Freelancer</div></div></div>
+      <div class="scroll">
+        <div class="sec-title" style="margin-top:6px">How Sitawi works for you</div>
+        <div class="list plist">
+          <div class="row"><div class="body"><div class="t">Trust mode</div><div class="s">Sitawi drafts, you approve every send</div></div><span class="trust">Mirror</span></div>
+          <div class="row"><div class="body"><div class="t">Your work</div><div class="s" id="workLabel">Freelance · earns in KES &amp; USD</div></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="row"><div class="body"><div class="t">KRA PIN</div><div class="s">Connected</div></div><span class="st green">Verified</span></div>
+        </div>
+        <div class="sec-title">Notifications</div>
+        <div class="list plist">
+          <div class="row"><div class="body"><div class="t">Deadline reminders</div><div class="s">WhatsApp · 3 days before</div></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="row"><div class="body"><div class="t">New policy alerts</div><div class="s">Only what affects you</div></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+        <div class="sec-title">Security &amp; privacy</div>
+        <div class="list plist">
+          <div class="row" id="secRow"><svg class="g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><div class="body"><div class="t">How we protect your data</div><div class="s">7 principles · Kenya DPA 2019</div></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+        <div class="sec-title">Setup</div>
+        <div class="list plist">
+          <div class="row" id="redoRow"><div class="body"><div class="t">Redo my profile</div><div class="s">Run onboarding again</div></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DETAIL overlay (Lemonade page) -->
+    <div class="detail" id="detail">
+      <div class="dback"><button id="dbackBtn" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+      <div class="dscroll" id="dscroll"></div>
+    </div>
+
+  </div>
+
+  <div class="tabwrap">
+    <div class="tabbar" id="tabbar">
+      <button class="tab active" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5M6 9.5V20h12V9.5"/></svg><span>Home</span></button>
+      <button class="tab" data-tab="explore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg><span>Explore</span></button>
+      <button class="tab ask" data-tab="ask"><span class="askbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.5 7.2L4 20l.9-4A8 8 0 1 1 20 12z"/></svg></span><span>Ask</span></button>
+      <button class="tab" data-tab="money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 7l3-3h11M16 13h.01"/></svg><span>Money</span></button>
+      <button class="tab" data-tab="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c1.3-3.3 4.2-4.6 7-4.6s5.7 1.3 7 4.6"/></svg><span>Profile</span></button>
+    </div>
+    <div class="homebar"></div>
+  </div>
+  </div>
+</div>
+
+<script>
+  const cats = {
+    tax:{ title:"Income Tax", motif:"m-tax", headline:"The tax clarity you actually need",
+      features:[["Returns & filing","M7 3h8l4 4v14H7z M15 3v4h4M10 13h6M10 17h6"],["What you owe","circle:12,12,8|M9.6 9.6a2.4 2.4 0 0 1 4.6.6c0 2.6-4 1.4-4 3.9a2.4 2.4 0 0 0 4.6.6"],["Key deadlines","rect:4,5,16,15,2.5|M4 9.5h16M8.5 3v4M15.5 3v4"]],
+      cta:"ASK ABOUT MY TAX", ask:"tax",
+      bullets:["Answers from official KRA sources","Plain language, no jargon"],
+      content(){
+        const p=getProfileSafe();
+        const band=p?p.estTax:null;
+        const self=p?p.self:false;
+        const foreign=p?p.foreign:false;
+        let applies='';
+        if(self) applies='<div class="dapplies">Based on your profile: you earn from <b>self-employment/gig work</b>'+(foreign?' with <b>foreign income</b>':'')+'. You file an individual return and may fall under <b>Turnover Tax</b> if gross is under KES 25M.</div>';
+        else applies='<div class="dapplies">Based on your profile: income tax applies to your earnings. File an annual return by the deadline.</div>';
+        return `
+          <span class="dtag green">Applies to you</span>
+          ${applies}
+          <div class="dkey">
+            <div class="dkey-item"><div class="dv">KES 2,400</div><div class="dl">Monthly personal relief</div></div>
+            <div class="dkey-item"><div class="dv">${band?'KES '+money(band):'—'}</div><div class="dl">Your est. annual tax</div></div>
+          </div>
+          <div class="dsec"><div class="dsec-t">PAYE tax bands (monthly)</div>
+          <table class="dtable"><thead><tr><th>Income band</th><th>Rate</th></tr></thead><tbody>
+            <tr><td>First KES 24,000</td><td class="hi">10%</td></tr>
+            <tr><td>KES 24,001 – 32,333</td><td class="hi">25%</td></tr>
+            <tr><td>KES 32,334 – 500,000</td><td class="hi">30%</td></tr>
+            <tr><td>KES 500,001 – 800,000</td><td class="hi">32.5%</td></tr>
+            <tr><td>Above KES 800,000</td><td class="hi">35%</td></tr>
+          </tbody></table></div>
+          <div class="dsec"><div class="dsec-t">Reliefs you can claim</div>
+          <table class="dtable"><thead><tr><th>Relief</th><th>Cap</th></tr></thead><tbody>
+            <tr><td>Personal relief</td><td class="accent">KES 2,400/mo</td></tr>
+            <tr><td>Insurance relief (15% of premiums)</td><td class="accent">KES 5,000/mo</td></tr>
+            <tr><td>Pension relief</td><td class="accent">KES 30,000/mo</td></tr>
+          </tbody></table></div>
+          <div class="dsec"><div class="dsec-t">Key deadlines</div>
+          <div class="dinfo"><b>Annual return:</b> file by the 4th month after year-end (April 30 for most). The old June 30 deadline was scrapped by Finance Act 2026, effective from the 2026 tax year (filed in 2027).</div></div>
+          ${foreign?'<div class="dwarn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.2 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0z"/></svg><div><b>Foreign income:</b> Kenya taxes worldwide income. USD earnings from Upwork, Fiverr, or foreign clients are taxable. You may claim <b>foreign tax relief</b> to avoid being taxed twice.</div></div>':''}
+          <div class="dcite">Source: Income Tax Act (Cap 470) as amended by Finance Acts 2023–2026 · <a href="https://www.kra.go.ke/individual/filing-paying/types-of-taxes/income-tax" target="_blank">KRA Income Tax</a> · Verified Jul 2026</div>`;
+      }},
+    biz:{ title:"Business", motif:"m-biz", headline:"Turn your expenses into tax savings",
+      features:[["Turnover Tax","M6 18 18 6|circle:8,8,2|circle:16,16,2"],["eTIMS","M6 3v18l2.5-1.6L11 21l2.5-1.6L16 21l2-1.6V3l-2 1.6L13.5 3 11 4.6 8.5 3z|M9 8h6M9 12h6"],["Deductions","circle:12,12,8|M9.6 9.6a2.4 2.4 0 0 1 4.6.6c0 2.6-4 1.4-4 3.9a2.4 2.4 0 0 0 4.6.6"]],
+      cta:"CHECK WHAT I OWE", ask:"biz",
+      bullets:["See your savings add up","We flag deadlines before they bite"],
+      content(){
+        const p=getProfileSafe();
+        const self=p?p.self:false;
+        const fin=typeof getFinSummary==='function'?getFinSummary():null;
+        let finBox='';
+        if(fin&&fin.count){
+          const tot=Math.round(fin.income*0.03);
+          finBox=`<div class="dkey"><div class="dkey-item"><div class="dv">KES ${money(fin.income)}</div><div class="dl">Your gross income logged</div></div><div class="dkey-item"><div class="dv">KES ${money(tot)}</div><div class="dl">Est. Turnover Tax due</div></div><div class="dkey-item"><div class="dv">KES ${money(fin.deductible)}</div><div class="dl">Deductible expenses</div></div><div class="dkey-item"><div class="dv">KES ${money(fin.taxSaved)}</div><div class="dl">Est. tax saved</div></div></div>`;
+        }
+        return `
+          <span class="dtag ${self?'green':'orange'}">${self?'Applies to you':'May apply'}</span>
+          ${self?'<div class="dapplies">As a gig/freelance earner, you likely fall under <b>Turnover Tax</b> if your gross annual turnover is between <b>KES 1M and KES 25M</b>. ToT is a final tax — you don’t pay additional income tax on that turnover.</div>':'<div class="dinfo">Turnover Tax applies to businesses and self-employed individuals with annual turnover between KES 1M and KES 25M.</div>'}
+          ${finBox}
+          <div class="dsec"><div class="dsec-t">Turnover Tax</div>
+          <table class="dtable"><thead><tr><th>Detail</th><th>Value</th></tr></thead><tbody>
+            <tr><td>Rate</td><td class="hi">3% of gross turnover</td></tr>
+            <tr><td>Threshold</td><td>KES 1M – 25M annual</td></tr>
+            <tr><td>Due date</td><td class="accent">20th of next month</td></tr>
+            <tr><td>Type</td><td>Final tax (no further IT)</td></tr>
+          </tbody></table></div>
+          <div class="dsec"><div class="dsec-t">eTIMS invoicing</div>
+          <div class="dinfo"><b>Mandatory since Jan 2024.</b> All businesses must issue electronic invoices through KRA’s eTIMS system. From <b>January 2026</b>, expenses without valid eTIMS invoices are disallowed as deductions — even if genuine.</div>
+          <div class="dwarn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.2 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0z"/></svg><div>KRA has flagged <b>sole proprietors and freelancers</b> as a primary eTIMS audit focus. Make sure your expenses have eTIMS-compliant invoices.</div></div></div>
+          <div class="dsec"><div class="dsec-t">Common deductible expenses</div>
+          <table class="dtable"><thead><tr><th>Expense</th><th>eTIMS?</th></tr></thead><tbody>
+            <tr><td>Fuel &amp; transport</td><td class="accent">Required</td></tr>
+            <tr><td>Internet &amp; data</td><td class="accent">Required</td></tr>
+            <tr><td>Devices &amp; software</td><td class="accent">Required</td></tr>
+            <tr><td>Business supplies</td><td class="accent">Required</td></tr>
+            <tr><td>Insurance premiums</td><td>Relief route</td></tr>
+            <tr><td>Pension contributions</td><td>Relief route</td></tr>
+          </tbody></table></div>
+          <div class="dcite">Source: Income Tax Act; Finance Acts 2023–2026; KRA eTIMS enforcement notices · <a href="https://www.kra.go.ke/individual/filing-paying/types-of-taxes/turnover-tax-tot" target="_blank">KRA Turnover Tax</a> · Verified Jul 2026</div>`;
+      }},
+    health:{ title:"Health", motif:"m-health", headline:"Health cover that moves with your income",
+      features:[["SHIF cover","M12 20s-7-4.4-9.2-8.6C1.4 8.5 3.1 5 6.4 5 8.7 5 12 7.6 12 7.6S15.3 5 17.6 5c3.3 0 5 3.5 3.6 6.4C19 15.6 12 20 12 20z"],["What you pay","M6 18 18 6|circle:8,8,2|circle:16,16,2"],["NSSF","M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"]],
+      cta:"AM I COVERED?", ask:"health",
+      bullets:["Know your 2.75% at a glance"],
+      content(){
+        const p=getProfileSafe();
+        const inc=p&&p.estTax?{'Under KES 20,000':15000,'KES 20,000 – 50,000':35000,'KES 50,000 – 100,000':75000,'Over KES 100,000':150000}:'';
+        let est='';
+        try{
+          const raw=obAns.income||'';
+          const mid={'Under KES 20,000':15000,'KES 20,000 – 50,000':35000,'KES 50,000 – 100,000':75000,'Over KES 100,000':150000}[raw];
+          if(mid){
+            const shif=Math.max(300,Math.round(mid*0.0275));
+            const nssf=Math.min(2160,Math.round(mid*0.06));
+            est=`<div class="dkey"><div class="dkey-item"><div class="dv">KES ${money(shif)}</div><div class="dl">Your est. SHIF/month</div></div><div class="dkey-item"><div class="dv">KES ${money(nssf)}</div><div class="dl">Your est. NSSF/month</div></div></div>`;
+          }
+        }catch(e){}
+        return `
+          <span class="dtag green">Applies to you</span>
+          <div class="dapplies">SHIF and NSSF apply to <b>all employed and self-employed</b> Kenyans. Your employer deducts and remits. Self-employed individuals register and pay directly through the SHA portal.</div>
+          ${est}
+          <div class="dsec"><div class="dsec-t">SHIF (Social Health Insurance Fund)</div>
+          <table class="dtable"><thead><tr><th>Detail</th><th>Value</th></tr></thead><tbody>
+            <tr><td>Rate</td><td class="hi">2.75% of gross salary</td></tr>
+            <tr><td>Minimum</td><td>KES 300/month</td></tr>
+            <tr><td>Cap</td><td class="accent">No upper cap</td></tr>
+            <tr><td>Replaced</td><td>NHIF (from Oct 2024)</td></tr>
+          </tbody></table>
+          <div class="dinfo"><b>What changed from NHIF:</b> NHIF used fixed bands. SHIF is a flat percentage with no upper cap — higher earners pay more. The minimum is KES 300 for those earning below KES 10,909/month.</div></div>
+          <div class="dsec"><div class="dsec-t">NSSF (National Social Security Fund)</div>
+          <table class="dtable"><thead><tr><th>Detail</th><th>Value</th></tr></thead><tbody>
+            <tr><td>Employee contribution</td><td class="hi">6% of pensionable pay</td></tr>
+            <tr><td>Employer match</td><td>6% of pensionable pay</td></tr>
+            <tr><td>Upper earnings limit</td><td>KES 36,000/month</td></tr>
+            <tr><td>Max contribution</td><td class="accent">KES 2,160/month</td></tr>
+          </tbody></table></div>
+          <div class="dcite">Source: Social Health Insurance Act 2023; NSSF Act 2013 · <a href="https://sha.go.ke" target="_blank">SHA Portal</a> · Verified Jul 2026</div>`;
+      }},
+    house:{ title:"Housing Levy", motif:"m-house", headline:"The housing levy, finally in plain English",
+      features:[["What it is","M4 10.5 12 4l8 6.5M6 9.5V20h12V9.5"],["Your 1.5%","M6 18 18 6|circle:8,8,2|circle:16,16,2"],["How to remit","M12 16V4M8 8l4-4 4 4M5 20h14"]],
+      cta:"WALK ME THROUGH IT", ask:"house",
+      bullets:["Know exactly what leaves your pocket"],
+      content(){
+        let est='';
+        try{
+          const raw=obAns.income||'';
+          const mid={'Under KES 20,000':15000,'KES 20,000 – 50,000':35000,'KES 50,000 – 100,000':75000,'Over KES 100,000':150000}[raw];
+          if(mid){
+            const emp=Math.round(mid*0.015);
+            est=`<div class="dkey"><div class="dkey-item"><div class="dv">KES ${money(emp)}</div><div class="dl">Your est. levy/month</div></div><div class="dkey-item"><div class="dv">KES ${money(emp)}</div><div class="dl">Employer match</div></div></div>`;
+          }
+        }catch(e){}
+        return `
+          <span class="dtag green">Applies to you</span>
+          <div class="dapplies">The Affordable Housing Levy applies to <b>all employed and self-employed</b> individuals. It is deducted from your gross salary — there are no general exemptions.</div>
+          ${est}
+          <div class="dsec"><div class="dsec-t">How it works</div>
+          <table class="dtable"><thead><tr><th>Detail</th><th>Value</th></tr></thead><tbody>
+            <tr><td>Employee rate</td><td class="hi">1.5% of gross salary</td></tr>
+            <tr><td>Employer match</td><td class="hi">1.5% (total 3%)</td></tr>
+            <tr><td>Cap</td><td class="accent">No upper cap</td></tr>
+            <tr><td>Exemptions</td><td>None (general)</td></tr>
+            <tr><td>Remitted via</td><td>iTax, alongside PAYE</td></tr>
+          </tbody></table></div>
+          <div class="dinfo"><b>Can I get it back?</b> Contributions may be refundable after <b>5 years</b> if unused for affordable housing. The Affordable Housing Act 2024 was upheld by the Supreme Court.</div>
+          <div class="dsec"><div class="dsec-t">For self-employed</div>
+          <div class="dinfo">Self-employed individuals calculate the levy on their <b>declared monthly income</b>. Remit by the 9th of the following month through iTax.</div></div>
+          <div class="dcite">Source: Affordable Housing Act 2024 · <a href="https://www.kra.go.ke/individual/filing-paying/types-of-taxes/affordable-housing-levy" target="_blank">KRA Housing Levy</a> · Verified Jul 2026</div>`;
+      }},
+    save:{ title:"Savings", motif:"m-save", headline:"Keep more of what you earn",
+      features:[["Log expenses","M6 3v18l2.5-1.6L11 21l2.5-1.6L16 21l2-1.6V3l-2 1.6L13.5 3 11 4.6 8.5 3z|M9 8h6M9 12h6"],["Claim reliefs","circle:12,12,8|M9.6 9.6a2.4 2.4 0 0 1 4.6.6c0 2.6-4 1.4-4 3.9a2.4 2.4 0 0 0 4.6.6"],["Stay compliant","M4 12l5 5L20 6"]],
+      cta:"GO TO MONEY TAB", ask:"save",
+      bullets:["See KES saved in real time","Get every relief you're owed"],
+      content(){
+        const fin=typeof getFinSummary==='function'?getFinSummary():null;
+        let finBox='';
+        if(fin&&fin.count){
+          finBox=`<div class="dkey"><div class="dkey-item"><div class="dv">KES ${money(fin.deductible)}</div><div class="dl">Total deductible</div></div><div class="dkey-item"><div class="dv">KES ${money(fin.taxSaved)}</div><div class="dl">Est. tax saved</div></div></div>`;
+        }else{
+          finBox='<div class="dinfo">You haven’t logged any expenses yet. Head to the <b>Money</b> tab to start adding transactions and see your savings grow.</div>';
+        }
+        return `
+          <span class="dtag green">Your money</span>
+          ${finBox}
+          <div class="dsec"><div class="dsec-t">Tax reliefs (automatic)</div>
+          <table class="dtable"><thead><tr><th>Relief</th><th>How much</th><th>Cap</th></tr></thead><tbody>
+            <tr><td>Personal relief</td><td>Automatic</td><td class="accent">KES 28,800/yr</td></tr>
+            <tr><td>Insurance relief</td><td>15% of premiums</td><td class="accent">KES 60,000/yr</td></tr>
+            <tr><td>Pension contribution</td><td>Actual paid</td><td class="accent">KES 360,000/yr</td></tr>
+          </tbody></table></div>
+          <div class="dsec"><div class="dsec-t">Business expense deductions</div>
+          <div class="dinfo">If you’re self-employed or run a business, these costs reduce your taxable income. <b>Every expense must have an eTIMS invoice</b> from Jan 2026 onward.</div>
+          <table class="dtable"><thead><tr><th>Category</th><th>Examples</th></tr></thead><tbody>
+            <tr><td class="hi">Fuel &amp; transport</td><td>Fuel, boda fare, Uber for work</td></tr>
+            <tr><td class="hi">Internet &amp; data</td><td>Wi-Fi, Safaricom bundles, hotspot</td></tr>
+            <tr><td class="hi">Devices</td><td>Phone, laptop, software subscriptions</td></tr>
+            <tr><td class="hi">Office &amp; supplies</td><td>Coworking, stationery, printing</td></tr>
+            <tr><td class="hi">Professional fees</td><td>Accountant, legal, licenses</td></tr>
+            <tr><td class="hi">Marketing</td><td>Ads, domain, hosting, business cards</td></tr>
+          </tbody></table></div>
+          <div class="dsec"><div class="dsec-t">Capital allowances (wear &amp; tear)</div>
+          <div class="dinfo">Big items like computers and vehicles aren’t fully deductible upfront. They’re depreciated over time:<br>• Computers &amp; electronics: <b>30% per year</b><br>• Motor vehicles: <b>25% per year</b><br>• Furniture &amp; fittings: <b>12.5% per year</b></div></div>
+          <div class="dwarn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.2 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0z"/></svg><div><b>No eTIMS = no deduction.</b> From January 2026, KRA disallows any expense without a valid eTIMS invoice. This applies even if the expense is genuine and you have a receipt.</div></div>
+          <div class="dcite">Source: Income Tax Act (Cap 470); Finance Acts 2023–2026; KRA eTIMS enforcement notices · <a href="https://www.kra.go.ke/business/companies-partnerships/companies-702partnerships-702702702702702702702pin-702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702702/etims" target="_blank">KRA eTIMS</a> · Verified Jul 2026</div>`;
+      }}
+  };
+  function fico(spec){
+    let out='';
+    spec.split('|').forEach(p=>{
+      if(p.startsWith('circle:')){const[cx,cy,r]=p.slice(7).split(',');out+=`<circle cx="${cx}" cy="${cy}" r="${r}"/>`;}
+      else if(p.startsWith('rect:')){const[x,y,w,h,rx]=p.slice(5).split(',');out+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;}
+      else out+=`<path d="${p}"/>`;
+    });
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${out}</svg>`;
+  }
+  const check='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>';
+
+  const detail = document.getElementById('detail');
+  const dscroll = document.getElementById('dscroll');
+  function openDetail(key){
+    const c = cats[key]; if(!c) return;
+    dscroll.innerHTML = `
+      <div class="cat-title">${c.title}</div>
+      <div class="hero"><svg viewBox="0 0 390 200"><use href="#env"/><use href="#${c.motif}"/></svg></div>
+      <h1 class="headline">${c.headline}</h1>
+      <div class="features">${c.features.map(f=>`<div class="feature"><div class="circle">${fico(f[1])}</div><span>${f[0]}</span></div>`).join('')}</div>
+      <button class="cta" data-ask="${c.ask}">${c.cta}</button>
+      <div class="bullets">${c.bullets.map(b=>`<div class="bullet"><span class="chk">${check}</span>${b}</div>`).join('')}</div>`;
+    detail.classList.add('open');
+  }
+  document.getElementById('dbackBtn').addEventListener('click', ()=> detail.classList.remove('open'));
+
+  function openSecurity(){
+    const warn='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.2 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0z"/></svg>';
+    dscroll.innerHTML=`
+      <div class="cat-title" style="margin-bottom:4px">Security &amp; Data Protection</div>
+      <p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-bottom:20px">7 principles that govern how Sitawi handles your data — from the code to the Kenya Data Protection Act.</p>
+
+      <div class="sec-block"><div class="sb-head"><span class="sb-num">1</span><span class="sb-title">Minimize what we touch</span></div>
+      <div class="sb-body">The best leak-prevention strategy is not collecting data we don't need.
+        <ul>
+          <li>We <strong>never store</strong> your full KRA PIN, ID number, or tax return contents. Our rule engine only needs categories — <code>entity_type</code>, <code>income_source</code>, <code>registration_status</code> — not raw tax data.</li>
+          <li>Where possible, we <strong>query and discard</strong>: check a PIN/TCC status, use the boolean result to match a clause, and don't persist the raw response.</li>
+          <li>We never request OAuth scopes beyond what the current flow needs.</li>
+        </ul>
+      </div></div>
+
+      <div class="sec-block"><div class="sb-head"><span class="sb-num">2</span><span class="sb-title">The AI never sees your personal data</span></div>
+      <div class="sb-body">Our rule engine matches your profile to clauses. The AI only phrases the matched clause's <strong>already-public legal text</strong>.
+        <ul>
+          <li>The AI prompt <strong>never includes</strong> your KRA PIN, ID number, phone number, or full tax details.</li>
+          <li>It receives only the clause fields and an anonymized category like <code>"registered_business"</code>.</li>
+          <li>If a request gets logged by the AI provider, no taxpayer identifiers are in those logs.</li>
+        </ul>
+      </div></div>
+
+      <div class="sec-block"><div class="sb-head"><span class="sb-num">3</span><span class="sb-title">Encryption, both directions</span></div>
+      <div class="sb-body">
+        <ul>
+          <li><strong>In transit:</strong> HTTPS/TLS everywhere — between your device, our backend, and any KRA/eCitizen/Daraja API call. We never accept plaintext HTTP callbacks.</li>
+          <li><strong>At rest:</strong> Any persisted profile data is encrypted at the column level (not just disk-level) for anything identifying — PIN, ID number, phone number. Keys are managed via KMS, never hardcoded.</li>
+          <li><strong>Secrets management:</strong> All API keys and consumer secrets live in environment variables or a secrets manager — never committed to the codebase.</li>
+        </ul>
+      </div></div>
+
+      <div class="sec-block"><div class="sb-head"><span class="sb-num">4</span><span class="sb-title">Access control</span></div>
+      <div class="sb-body">
+        <ul>
+          <li><strong>Narrow token scopes:</strong> eCitizen OAuth and Daraja credentials are requested with the minimum scope needed — read-only profile lookup, not broad account access.</li>
+          <li><strong>Short-lived sessions:</strong> Authenticated sessions expire quickly. Anything sensitive requires re-authentication.</li>
+          <li><strong>Least privilege internally:</strong> Per-developer sandbox keys during development. No shared production credentials passed around in group chats.</li>
+        </ul>
+      </div></div>
+
+      <div class="sec-block"><div class="sb-head"><span class="sb-num">5</span><span class="sb-title">Payment callback security</span></div>
+      <div class="sb-body">For M-Pesa and Daraja integrations:
+        <ul>
+          <li>Callbacks are validated for <strong>idempotency</strong> using the CheckoutRequestID as a unique key — checked before processing.</li>
+          <li>Raw callback payloads are stored <strong>encrypted</strong> for debugging/reconciliation, then <strong>purged on a retention schedule</strong> — not kept indefinitely.</li>
+          <li>Unencrypted financial callback payloads in logs are a classic leak vector — we prevent this by design.</li>
+        </ul>
+      </div></div>
+
+      <div class="sec-block"><div class="sb-head"><span class="sb-num">6</span><span class="sb-title">Kenya Data Protection Act, 2019</span></div>
+      <div class="sb-body">The DPA governs how platforms handle citizen data. KRA as a data controller must comply for its own API programs. When we touch real taxpayer data beyond the demo, we operate as a <strong>data processor</strong> under this Act:
+        <ul>
+          <li>Lawful basis for processing</li>
+          <li>Data subject consent and notice</li>
+          <li>Breach notification procedures</li>
+          <li>Registration with the Office of the Data Protection Commissioner</li>
+        </ul>
+        <div class="sb-warn">${warn} For the current demo, all data is mocked — no real taxpayer information is collected or processed. Real integration requires full DPA compliance work, scoped but not yet built.</div>
+      </div>
+      <div class="dpa-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Kenya DPA 2019 — compliance path documented</div>
+      </div>
+
+      <div class="sec-block"><div class="sb-head"><span class="sb-num">7</span><span class="sb-title">What we never do</span></div>
+      <div class="sb-body">Common mistakes we prevent by design:
+        <ul>
+          <li><strong>No full request/response logging</strong> from KRA/eCitizen/Daraja calls to shared cloud logging services.</li>
+          <li><strong>No API keys in source control</strong> — commit history is scanned before every push.</li>
+          <li><strong>No debug endpoints</strong> that dump user profiles — removed before any public URL goes live.</li>
+          <li><strong>No shared secrets</strong> across sandbox and production environments.</li>
+        </ul>
+      </div></div>`;
+    detail.classList.add('open');
+  }
+
+  // tabs
+  const views = document.querySelectorAll('.view');
+  const tabs = document.querySelectorAll('.tab');
+  function showTab(name){
+    views.forEach(v=>v.classList.toggle('active', v.dataset.view===name));
+    tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+    detail.classList.remove('open');
+  }
+  tabs.forEach(t=> t.addEventListener('click', ()=> showTab(t.dataset.tab)));
+
+  // click delegation so dynamically-rendered Home items work too
+  document.addEventListener('click', e=>{
+    const d=e.target.closest('[data-detail]'); if(d){ openDetail(d.dataset.detail); return; }
+    const g=e.target.closest('[data-goto]'); if(g){ showTab(g.dataset.goto); return; }
+    const a=e.target.closest('[data-ask]'); if(a){ goAsk(a.dataset.ask); }
+    const al=e.target.closest('[data-al]'); if(al){ alertLang=al.dataset.al; renderAlerts(deriveProfile(obAns)._obAns||obAns); }
+    const sl=e.target.closest('.link[href="#security"]'); if(sl){ e.preventDefault(); openSecurity(); }
+    const sr=e.target.closest('#secRow'); if(sr){ openSecurity(); showTab('profile'); }
+  });
+  // Home preview-state toggle (AC5: caught-up empty state)
+  let homeN=0;
+  function applyHomeState(caught){
+    document.getElementById('attnSection').style.display=caught?'none':'';
+    document.getElementById('caughtSection').style.display=caught?'':'none';
+    const pill=document.getElementById('homePill');
+    if(caught){pill.classList.add('ok');pill.innerHTML='<span class="dot"></span>On track';}
+    else{pill.classList.remove('ok');pill.innerHTML=`<span class="dot"></span>${homeN} thing${homeN===1?'':'s'} need${homeN===1?'s':''} you`;}
+    document.querySelectorAll('#homeSeg button').forEach(b=>b.classList.toggle('active',(b.dataset.state==='caught')===caught));
+  }
+  document.getElementById('homeSeg').querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=> applyHomeState(b.dataset.state==='caught')));
+
+  // ask
+  const thread=document.getElementById('thread'), qr=document.getElementById('qr');
+  const seeds={
+    tax:{intro:"Let's sort your income tax. You earn as a freelancer in KES and USD — a few different rules touch you. Where should we start?",chips:["Do I owe tax on USD?","When do I file?","What's a nil return?"]},
+    biz:{intro:"Tell me roughly what you made last month and I'll estimate your Turnover Tax — plus what you could deduct with eTIMS.",chips:["I made KES 40,000","What can I deduct?","What is eTIMS?"]},
+    health:{intro:"SHIF now takes 2.75% of your income. Want me to work out your monthly contribution?",chips:["Work out my SHIF","Is NHIF gone?","What about NSSF?"]},
+    house:{intro:"The Affordable Housing Levy is 1.5% of your gross. I'll walk you through what you owe and how to remit it.",chips:["How much do I owe?","How do I remit?","Is it refundable?"]},
+    save:{intro:"Let's find money you're leaving behind. Log an expense in the Money tab or ask me about your deductions.",chips:["What can I deduct?","How much tax am I saving?","Show my expense breakdown"]},
+    default:{intro:"Karibu, Wanjiku. Ask me anything about your tax or policy — I only answer from official KRA sources and I'll show you where it comes from.",chips:["How do I pay less tax?","What if I don't file?","What can I expense?"]}
+  };
+  function addBot(t){const e=document.createElement('div');e.className='b in';e.innerHTML=t;thread.appendChild(e);thread.scrollTop=thread.scrollHeight;}
+  function addCite(){const c=document.createElement('div');c.className='cite';c.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/></svg>KRA · official guidance';thread.appendChild(c);const v=document.createElement('div');v.className='verif';v.textContent='Verified 12 Jul 2026 · reviewed by a licensed agent';thread.appendChild(v);thread.scrollTop=thread.scrollHeight;}
+  function setChips(list){qr.innerHTML=list.map(c=>`<button>${c}</button>`).join('');qr.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>sendUser(b.textContent)));}
+  function addTyping(){const t=document.createElement('div');t.className='typing';t.id='typing';t.innerHTML='<i></i><i></i><i></i>';thread.appendChild(t);thread.scrollTop=thread.scrollHeight;}
+  function rmTyping(){const t=document.getElementById('typing');if(t)t.remove();}
+  function addEscalation(msg){
+    const d=document.createElement('div');d.className='handoff';
+    d.innerHTML=`<p>${msg}</p><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H8l-4 4z"/></svg>Connect me to a licensed agent</button>`;
+    thread.appendChild(d);thread.scrollTop=thread.scrollHeight;
+    d.querySelector('button').onclick=()=>addBot("Done — a licensed agent will reach out on WhatsApp within the hour. I'll pass on your question so you don't repeat yourself.");
+  }
+  // grounded reply with confidence + escalation states (never bluff)
+  // financial context from transaction store
+  function finContext(){
+    if(typeof getFinSummary!=='function')return null;
+    const s=getFinSummary();
+    if(!s.count)return null;
+    return s;
+  }
+  function reply(text){
+    const t=text.toLowerCase();
+    const fin=finContext();
+
+    // financial data queries — only when user has transactions
+    if(fin){
+      if(/(how much.*spend|spent|spending|total.*expense|my expenses)/.test(t)){
+        const catMatch=t.match(/(?:on|for)\s+(fuel|airtime|data|device|software|food|rent|insurance|health|supplie)/);
+        if(catMatch){
+          const catKey=catMatch[1].replace(/s$/,'');
+          const match=fin.cats.find(([k])=>k.includes(catKey)||CAT_META[k]?.label.toLowerCase().includes(catKey));
+          if(match){
+            addBot(`Based on your records, you've spent <span class="amt">KES ${money(match[1].total)}</span> on ${match[1].label} across ${match[1].count} transaction${match[1].count===1?'':'s'}.${match[1].total&&CAT_META[match[0]]?.deductible?' This is a deductible business expense — make sure you have eTIMS invoices for each.':''}`);addCite();return;
+          }
+        }
+        addBot(`From your ${fin.count} logged transactions: total expenses are <span class="amt">KES ${money(fin.expenses)}</span>. Your top categories: ${fin.cats.slice(0,3).map(([k,c])=>c.label+' (KES '+money(c.total)+')').join(', ')||'none yet'}.`);addCite();return;
+      }
+      if(/(how much.*earn|income|revenue|total.*receiv|my income|made this)/.test(t)){
+        addBot(`Based on your logged transactions, total income received is <span class="amt">KES ${money(fin.income)}</span> across ${txns.filter(t=>t.direction==='in').length} transactions.`);addCite();return;
+      }
+      if(/(how much.*tax|tax.*owe|owe.*tax|my tax|tot.*due|turnover.*tax.*due)/.test(t)){
+        const gross=fin.income||fin.expenses;
+        const tot=Math.round(gross*0.03);
+        addBot(`Based on your data:<br>• Gross income: <span class="amt">KES ${money(fin.income)}</span><br>• Deductible expenses: <span class="amt">KES ${money(fin.deductible)}</span><br>• Turnover Tax (3% of gross): <span class="amt">KES ${money(tot)}</span><br>• Estimated tax saved through deductions: <span class="amt">KES ${money(fin.taxSaved)}</span><br>Due by the 20th of next month.`);addCite();return;
+      }
+      if(/(deductible|deduction|can i deduct|tax.*save|saving|saved)/.test(t)){
+        const dedCats=fin.cats.filter(([k])=>CAT_META[k]?.deductible);
+        addBot(`You have <span class="amt">KES ${money(fin.deductible)}</span> in deductible expenses, saving you roughly <span class="amt">KES ${money(fin.taxSaved)}</span> in tax.${dedCats.length?' Deductible categories: '+dedCats.map(([k,c])=>c.label+' (KES '+money(c.total)+')').join(', ')+'.':''} Keep logging expenses with eTIMS invoices to increase your savings.`);addCite();return;
+      }
+      if(/(biggest|most|top|where.*money|breakdown|categor)/.test(t)){
+        if(!fin.cats.length){addBot("You haven't logged any expenses yet. Head to the Money tab to start adding transactions.");return;}
+        addBot(`Your expense breakdown:<br>${fin.cats.map(([k,c])=>`• ${c.label}: <span class="amt">KES ${money(c.total)}</span> (${c.count} txn${c.count===1?'':'s'})${CAT_META[k]?.deductible?' ✓ deductible':''}`).join('<br>')}<br><br>Total: <span class="amt">KES ${money(fin.expenses)}</span>`);addCite();return;
+      }
+      if(/(on track|track|forecast|month.*end|projection)/.test(t)){
+        const dayOfMonth=new Date().getDate();
+        const daysInMonth=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
+        const projected=Math.round(fin.income*(daysInMonth/dayOfMonth));
+        const projTax=Math.round(projected*0.03);
+        addBot(`At your current pace, projected monthly income is <span class="amt">KES ${money(projected)}</span>. That puts Turnover Tax at roughly <span class="amt">KES ${money(projTax)}</span> for the month. You have <span class="amt">KES ${money(fin.deductible)}</span> in deductions logged so far.`);addCite();return;
+      }
+      if(/(etims.*status|etims.*complian|need.*etims|missing.*etims)/.test(t)){
+        const needEtims=txns.filter(t=>t.etims_required);
+        addBot(`Out of ${fin.count} transactions, <span class="amt">${needEtims.length}</span> require eTIMS invoices for deductibility. Make sure you have compliant invoices for: ${[...new Set(needEtims.map(t=>t.cat_label))].join(', ')||'none'}.`);addCite();return;
+      }
+      if(/(export|download|excel|csv|spreadsheet|statement)/.test(t)){
+        addBot('You can export all your transactions from the Money tab — there are buttons for both CSV and Excel. The Excel file includes separate sheets for transactions, categories, and your tax summary.');return;
+      }
+    }else if(/(spend|expense|earn|income|tax.*owe|deduct|saving|breakdown|categor|track|forecast|export|excel)/.test(t)){
+      addBot("I don't have any transaction data yet. Head to the <b>Money</b> tab and paste an M-Pesa message or add entries manually — then ask me again and I'll give you real numbers.");return;
+    }
+
+    if(/(avoid|evade|dodge|escape|hide|conceal|under the table|without paying|don'?t pay|not declare|cheat)/.test(t)){
+      addBot("I can't help with avoiding or hiding tax — but I <b>can</b> help you pay less, legally, by claiming every deduction and relief you're entitled to. Want me to show which ones fit you?");return;
+    }
+    if(/(file for me|pay it for me|pay for me|submit it|do it for me|send it to kra|file it)/.test(t)){
+      addBot("In your current setup I only draft and hand things to you — I never file or pay to KRA myself. I'll prepare it and you confirm before anything is sent.");return;
+    }
+    if(/(pay less|less tax|reduce.*tax|lower.*tax|save.*tax|which.*relief|reliefs?)/.test(t)){
+      addBot('The legal way to pay less is claiming every deduction and relief you qualify for — fuel, data, work devices, pension and insurance relief — all logged with eTIMS invoices.');addCite();return;
+    }
+    if(/(40,?000|turnover|\bowe\b|\btot\b|how much.*tax)/.test(t)){
+      addBot('On KES 40,000 of gig income you fall under <span class="amt">Turnover Tax</span> — 3% of gross, about <span class="amt">KES 1,200</span>, due by the 20th of next month.');addCite();return;
+    }
+    if(/(shif|nhif|health)/.test(t)){addBot('<span class="amt">SHIF</span> replaced NHIF and takes <span class="amt">2.75%</span> of your gross income for health cover.');addCite();return;}
+    if(/(etims|invoice|deduct|expense|receipt|claim)/.test(t)){addBot('To claim an expense as a deduction it now needs an <span class="amt">eTIMS</span> invoice. Fuel, airtime, data and work devices typically qualify.');addCite();return;}
+    if(/\bvat\b/.test(t)){addBot('You only register for VAT once turnover passes <span class="amt">KES 5M a year</span>. On your profile you\'re well below it — nothing to do yet.');addCite();return;}
+    if(/(housing|levy)/.test(t)){addBot('The Affordable Housing Levy is <span class="amt">1.5%</span> of your gross income, deducted monthly.');addCite();return;}
+    if(/(usd|foreign|upwork|dollar|abroad)/.test(t)){addBot('Foreign-client income is taxable in Kenya as part of your worldwide income — but you may claim <span class="amt">foreign tax relief</span> so you\'re not taxed twice.');addCite();return;}
+    if(/(penalt|dispute|audit|exact|specific|should i|worth it|my case|behind|back tax|years|kra.*after|in trouble|don'?t file|didn'?t file)/.test(t)){
+      addBot("This one turns on your exact numbers and history, and I don't want to get it wrong.");
+      addEscalation("A licensed agent can look at your specifics and give you a firm answer.");return;
+    }
+    addBot("I'm not certain enough to answer that from official guidance — and I won't guess on something that affects your money.");
+    addEscalation("Let me connect you with a licensed agent who can help with this directly.");
+  }
+  function sendUser(text){
+    const m=document.createElement('div');m.className='b out';m.textContent=text;thread.appendChild(m);thread.scrollTop=thread.scrollHeight;
+    addTyping();
+    setTimeout(()=>{ rmTyping(); reply(text); },650);
+  }
+  function goAsk(seedKey){
+    const s=seeds[seedKey]||seeds.default;
+    thread.innerHTML=''; addBot(s.intro); setChips(s.chips);
+    showTab('ask');
+  }
+  // seed ask on first load
+  goAsk('default'); showTab('home');
+
+  document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const v=document.getElementById('input').value.trim();if(!v)return;document.getElementById('input').value='';sendUser(v);});
+
+  /* ===== FINANCIAL PIPELINE ENGINE ===== */
+  const TXN_KEY='sitawi_txns';
+  let txns=JSON.parse(localStorage.getItem(TXN_KEY)||'[]');
+  function saveTxns(){localStorage.setItem(TXN_KEY,JSON.stringify(txns));}
+
+  const CAT_META={
+    fuel:{label:'Fuel & transport',deductible:true,etims:true},
+    airtime:{label:'Airtime & data',deductible:true,etims:true},
+    devices:{label:'Devices & software',deductible:true,etims:true},
+    food:{label:'Food & meals',deductible:false,etims:false},
+    rent:{label:'Rent & utilities',deductible:true,etims:true},
+    supplies:{label:'Business supplies',deductible:true,etims:true},
+    insurance:{label:'Insurance',deductible:true,etims:false},
+    health:{label:'Health & medical',deductible:false,etims:false},
+    tax:{label:'Tax payment',deductible:false,etims:false},
+    salary:{label:'Salary / wages',deductible:false,etims:false},
+    sales:{label:'Sales income',deductible:false,etims:false},
+    client:{label:'Client payment',deductible:false,etims:false},
+    other:{label:'Other',deductible:false,etims:false}
+  };
+
+  const MERCHANT_CAT={
+    shell:'fuel',total:'fuel',rubis:'fuel','national oil':'fuel',boda:'fuel',uber:'fuel',bolt:'fuel',taxi:'fuel',
+    safaricom:'airtime',airtel:'airtime',telkom:'airtime',bundles:'airtime',
+    java:'food',kfc:'food','chicken inn':'food',restaurant:'food',cafe:'food',hotel:'food',
+    kplc:'rent','kenya power':'rent','nairobi water':'rent',
+    kra:'tax',itax:'tax',
+    hospital:'health',clinic:'health',pharmacy:'health',chemist:'health',
+    jumia:'devices',electronics:'devices',samsung:'devices',phone:'devices'
+  };
+
+  function autoCategory(desc){
+    const d=(desc||'').toLowerCase();
+    for(const[k,v]of Object.entries(MERCHANT_CAT)){
+      if(d.includes(k))return v;
+    }
+    return 'other';
+  }
+
+  function parseMpesa(msg){
+    const m=msg.trim();
+    if(!m)return null;
+    const txCode=(m.match(/^([A-Z0-9]{8,12})/)||[])[1]||'';
+    const amtMatch=m.match(/Ksh\s?([\d,]+(?:\.\d{2})?)/i);
+    if(!amtMatch)return null;
+    const amount=parseFloat(amtMatch[1].replace(/,/g,''));
+    let direction='out',merchant='';
+    if(/\breceived\b/i.test(m)){
+      direction='in';
+      merchant=(m.match(/from\s+([A-Z][A-Z\s.]+?)(?:\s+\d|$)/i)||[])[1]||'Unknown';
+    }else if(/\bsent\s+to\b/i.test(m)){
+      merchant=(m.match(/sent\s+to\s+([A-Z][A-Z\s.]+?)(?:\s+\d|$)/i)||[])[1]||'Unknown';
+    }else if(/\bpaid\s+to\b/i.test(m)){
+      merchant=(m.match(/paid\s+to\s+([A-Z][A-Z\s.]+?)(?:\s*\.?\s*on|$)/i)||[])[1]||'Unknown';
+    }else if(/\bwithdraw\b/i.test(m)){
+      merchant='ATM/Agent Withdrawal';
+    }else if(/\bbought\b/i.test(m)||/\bBuy\b/i.test(m)){
+      merchant=(m.match(/(?:bought|Buy)\s+.*?(?:for|from)\s+([A-Z][A-Z\s.]+?)(?:\s+\d|$)/i)||[])[1]||'Merchant';
+    }
+    merchant=merchant.trim().replace(/\.$/,'');
+    const dateMatch=m.match(/on\s+(\d{1,2}\/\d{1,2}\/\d{2,4})/i);
+    let date=new Date().toISOString().slice(0,10);
+    if(dateMatch){
+      const[d,mo,y]=dateMatch[1].split('/');
+      const yr=y.length===2?'20'+y:y;
+      date=`${yr}-${mo.padStart(2,'0')}-${d.padStart(2,'0')}`;
+    }
+    const balMatch=m.match(/balance\s+(?:is\s+)?Ksh\s?([\d,]+(?:\.\d{2})?)/i);
+    const balance=balMatch?parseFloat(balMatch[1].replace(/,/g,'')):null;
+    const category=autoCategory(merchant);
+    return {txCode,amount,direction,merchant,date,balance,category,source:'mpesa',raw:m};
+  }
+
+  function parseCSV(text){
+    const lines=text.trim().split(/\r?\n/);
+    if(lines.length<2)return [];
+    const header=lines[0].toLowerCase();
+    const cols=lines[0].split(',').map(c=>c.trim().toLowerCase());
+    const dateIdx=cols.findIndex(c=>/date/.test(c));
+    const descIdx=cols.findIndex(c=>/desc|narr|detail|ref/.test(c));
+    const debitIdx=cols.findIndex(c=>/debit|withdrawal|dr/.test(c));
+    const creditIdx=cols.findIndex(c=>/credit|deposit|cr/.test(c));
+    const balIdx=cols.findIndex(c=>/bal/.test(c));
+    if(dateIdx<0||descIdx<0)return [];
+    const results=[];
+    for(let i=1;i<lines.length;i++){
+      const vals=lines[i].split(',').map(c=>c.trim().replace(/^"|"$/g,''));
+      if(!vals[dateIdx])continue;
+      const debit=debitIdx>=0?parseFloat((vals[debitIdx]||'0').replace(/,/g,'')):0;
+      const credit=creditIdx>=0?parseFloat((vals[creditIdx]||'0').replace(/,/g,'')):0;
+      const amount=debit||credit||0;
+      if(!amount)continue;
+      const direction=debit>0?'out':'in';
+      const desc=vals[descIdx]||'';
+      const category=autoCategory(desc);
+      let date=vals[dateIdx];
+      const dParts=date.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+      if(dParts){const yr=dParts[3].length===2?'20'+dParts[3]:dParts[3];date=`${yr}-${dParts[2].padStart(2,'0')}-${dParts[1].padStart(2,'0')}`;}
+      results.push({txCode:'CSV-'+i,amount,direction,merchant:desc,date,balance:balIdx>=0?parseFloat((vals[balIdx]||'0').replace(/,/g,'')):null,category,source:'bank',raw:lines[i]});
+    }
+    return results;
+  }
+
+  function addTxn(t){
+    const cm=CAT_META[t.category]||CAT_META.other;
+    t.id='t_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    t.deductible=t.direction==='out'&&cm.deductible;
+    t.etims_required=t.direction==='out'&&cm.etims;
+    t.cat_label=cm.label;
+    txns.unshift(t);
+    saveTxns();
+    renderMoney();
+  }
+
+  function getFinSummary(){
+    const inc=txns.filter(t=>t.direction==='in').reduce((s,t)=>s+t.amount,0);
+    const exp=txns.filter(t=>t.direction==='out').reduce((s,t)=>s+t.amount,0);
+    const ded=txns.filter(t=>t.deductible).reduce((s,t)=>s+t.amount,0);
+    let profile=null;
+    try{profile=deriveProfile(obAns||{});}catch(e){}
+    let taxRate=0.03;
+    if(profile&&!profile.self)taxRate=0.1;
+    const taxSaved=Math.round(ded*taxRate);
+    const catMap={};
+    txns.filter(t=>t.direction==='out').forEach(t=>{
+      if(!catMap[t.category])catMap[t.category]={label:t.cat_label||t.category,total:0,count:0};
+      catMap[t.category].total+=t.amount;
+      catMap[t.category].count++;
+    });
+    const cats=Object.entries(catMap).sort((a,b)=>b[1].total-a[1].total);
+    return {income:inc,expenses:exp,deductible:ded,taxSaved,cats,taxRate,count:txns.length};
+  }
+
+  function renderMoney(){
+    const s=getFinSummary();
+    document.getElementById('fsIncome').textContent=money(s.income);
+    document.getElementById('fsExpense').textContent=money(s.expenses);
+    document.getElementById('fsDeduct').textContent=money(s.deductible);
+    document.getElementById('fsTaxSaved').textContent=money(s.taxSaved);
+    const maxCat=s.cats.length?s.cats[0][1].total:1;
+    document.getElementById('catBars').innerHTML=s.cats.map(([k,c])=>
+      `<div class="cat-bar"><span class="cl">${c.label}</span><div class="bar"><i style="width:${Math.round(c.total/maxCat*100)}%"></i></div><span class="cv">KES ${money(c.total)}</span></div>`
+    ).join('')||'<div style="font-size:13px;color:var(--ink-3);padding:4px 0">No expenses logged yet</div>';
+    const list=document.getElementById('txnList');
+    const empty=document.getElementById('emptyMoney');
+    if(!txns.length){
+      if(empty)empty.style.display='';
+      list.querySelectorAll('.txn').forEach(e=>e.remove());
+    }else{
+      if(empty)empty.style.display='none';
+      const recent=txns.slice(0,30);
+      const svgOut='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>';
+      const svgIn='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+      list.innerHTML=recent.map(t=>{
+        const tags=[];
+        if(t.deductible)tags.push('<span class="tag-ded">deductible</span>');
+        if(t.etims_required)tags.push('<span class="tag-etims">eTIMS</span>');
+        return `<div class="txn"><div class="ti ${t.direction}">${t.direction==='out'?svgOut:svgIn}</div><div class="mid"><div class="t">${t.merchant||t.cat_label||'Transaction'}</div><div class="s">${t.date} · ${t.cat_label||t.category} ${tags.join('')}</div></div><span class="amt ${t.direction}">${t.direction==='out'?'−':'+'}KES ${money(t.amount)}</span></div>`;
+      }).join('');
+    }
+    document.getElementById('txnCount').textContent=txns.length?txns.length+' transaction'+(txns.length===1?'':'s')+' logged':'';
+    const homeSaved=document.getElementById('homeSaved');
+    if(homeSaved)homeSaved.textContent=money(s.deductible);
+  }
+
+  // finance tab switching
+  document.getElementById('finTabs').addEventListener('click',e=>{
+    const btn=e.target.closest('.fin-tab');if(!btn)return;
+    document.querySelectorAll('.fin-tab').forEach(b=>b.classList.toggle('active',b===btn));
+    document.querySelectorAll('.fin-input').forEach(p=>p.classList.toggle('active',p.id==='fi-'+btn.dataset.ft));
+  });
+
+  // M-Pesa paste handler
+  const mpesaBox=document.getElementById('mpesaBox');
+  const parseResult=document.getElementById('parseResult');
+  const parseRows=document.getElementById('parseRows');
+  let pendingTxn=null;
+  mpesaBox.addEventListener('input',()=>{
+    const parsed=parseMpesa(mpesaBox.value);
+    if(parsed){
+      pendingTxn=parsed;
+      parseRows.innerHTML=[
+        ['Amount','KES '+money(parsed.amount)],
+        ['Direction',parsed.direction==='in'?'Received':'Sent/Paid'],
+        ['To/From',parsed.merchant],
+        ['Date',parsed.date],
+        ['Category',CAT_META[parsed.category]?.label||parsed.category],
+        parsed.balance!=null?['Balance','KES '+money(parsed.balance)]:null
+      ].filter(Boolean).map(([l,v])=>`<div class="parse-row"><span class="pl">${l}</span><span class="pv">${v}</span></div>`).join('');
+      parseResult.classList.add('show');
+    }else{
+      pendingTxn=null;
+      parseResult.classList.remove('show');
+    }
+  });
+  document.getElementById('parseSave').addEventListener('click',()=>{
+    if(pendingTxn){addTxn(pendingTxn);mpesaBox.value='';parseResult.classList.remove('show');pendingTxn=null;}
+  });
+  document.getElementById('parseCancel').addEventListener('click',()=>{
+    mpesaBox.value='';parseResult.classList.remove('show');pendingTxn=null;
+  });
+
+  // manual entry
+  document.getElementById('manDate').value=new Date().toISOString().slice(0,10);
+  document.getElementById('manSave').addEventListener('click',()=>{
+    const amt=parseFloat(document.getElementById('manAmt').value);
+    if(!amt||amt<=0)return;
+    addTxn({
+      txCode:'MAN-'+Date.now(),
+      amount:amt,
+      direction:document.getElementById('manDir').value,
+      merchant:document.getElementById('manDesc').value||'',
+      date:document.getElementById('manDate').value||new Date().toISOString().slice(0,10),
+      category:document.getElementById('manCat').value,
+      source:'manual',
+      raw:''
+    });
+    document.getElementById('manAmt').value='';
+    document.getElementById('manDesc').value='';
+  });
+
+  // CSV upload
+  document.getElementById('csvFile').addEventListener('change',e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const parsed=parseCSV(ev.target.result);
+      if(parsed.length){
+        parsed.forEach(t=>addTxn(t));
+        document.getElementById('csvStatus').textContent=parsed.length+' transactions imported from '+file.name;
+      }else{
+        document.getElementById('csvStatus').textContent='Could not parse CSV — check column headers';
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  // CSV export
+  document.getElementById('exportCsv').addEventListener('click',()=>{
+    if(!txns.length)return;
+    const header='Date,Description,Category,Direction,Amount,Deductible,eTIMS Required,Source\n';
+    const rows=txns.map(t=>[t.date,'"'+(t.merchant||'').replace(/"/g,'""')+'"',t.cat_label||t.category,t.direction,t.amount,t.deductible?'Yes':'No',t.etims_required?'Yes':'No',t.source].join(',')).join('\n');
+    const blob=new Blob([header+rows],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sitawi-transactions-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  });
+
+  // Excel export (multi-sheet via simple XLSX XML)
+  document.getElementById('exportXls').addEventListener('click',()=>{
+    if(!txns.length)return;
+    const s=getFinSummary();
+    const esc=v=>String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const cell=(v,t)=>t==='n'?`<Cell><Data ss:Type="Number">${v}</Data></Cell>`:`<Cell><Data ss:Type="String">${esc(v)}</Data></Cell>`;
+    const row=cells=>'<Row>'+cells.join('')+'</Row>';
+    let txnRows=txns.map(t=>row([cell(t.date),cell(t.merchant||''),cell(t.cat_label||t.category),cell(t.direction==='in'?'Income':'Expense'),cell(t.amount,'n'),cell(t.deductible?'Yes':'No'),cell(t.source)]));
+    let catRows=s.cats.map(([k,c])=>row([cell(c.label),cell(c.count,'n'),cell(c.total,'n')]));
+    let summaryRows=[
+      row([cell('Total income'),cell(s.income,'n')]),
+      row([cell('Total expenses'),cell(s.expenses,'n')]),
+      row([cell('Deductible total'),cell(s.deductible,'n')]),
+      row([cell('Est. tax saved ('+Math.round(s.taxRate*100)+'%)'),cell(s.taxSaved,'n')]),
+      row([cell('Transaction count'),cell(s.count,'n')])
+    ];
+    const xml=`<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Transactions"><Table>${row([cell('Date'),cell('Description'),cell('Category'),cell('Type'),cell('Amount KES'),cell('Deductible'),cell('Source')])}${txnRows.join('')}</Table></Worksheet><Worksheet ss:Name="By Category"><Table>${row([cell('Category'),cell('Count'),cell('Total KES')])}${catRows.join('')}</Table></Worksheet><Worksheet ss:Name="Summary"><Table>${row([cell('Metric'),cell('Value')])}${summaryRows.join('')}</Table></Worksheet></Workbook>`;
+    const blob=new Blob([xml],{type:'application/vnd.ms-excel'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sitawi-finances-'+new Date().toISOString().slice(0,10)+'.xls';a.click();
+  });
+
+  // render on load
+  renderMoney();
+
+  /* ===== onboarding flow + bridge into app ===== */
+  const obSteps=[
+    {type:'intro'},
+    {type:'q',id:'earn',multi:true,q:"How do you earn your money?",help:"Pick all that apply — it tells me exactly which rules touch you, and which to ignore.",options:["Freelance / online work","Rides or delivery","Selling online","Salary + a side hustle","Farming","Something else"]},
+    {type:'q',id:'income',q:"Roughly how much do you make a month?",help:"A rough band is fine. It decides things like whether Turnover Tax or VAT apply to you.",options:["Under KES 20,000","KES 20,000 – 50,000","KES 50,000 – 100,000","Over KES 100,000","Prefer not to say"]},
+    {type:'q',id:'foreign',q:"Do you ever get paid in foreign currency?",help:"Like USD from Upwork or foreign clients. It changes how your income is taxed.",options:["Yes, sometimes","No, only in KES"]},
+    {type:'q',id:'pin',q:"Do you have a KRA PIN?",help:"No stress if you're not sure — I can help you check or get one later.",options:["Yes","No","Not sure"]},
+    {type:'q',id:'biz',q:"Are you registered as a business?",help:"Most individual gig workers aren't — that's completely normal.",options:["Yes, registered","Not yet"]},
+    {type:'consent'},{type:'building'},{type:'reveal'}
+  ];
+  let obi=0; const obAns={};
+  const obStage=document.getElementById('ob-stage'),obFoot=document.getElementById('ob-foot'),
+        obBack=document.getElementById('ob-back'),obSkip=document.getElementById('ob-skip'),obBar=document.getElementById('ob-bar-fill');
+  const obTick='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>';
+  function obAnswered(s){return s.multi?(obAns[s.id]||[]).length>0:!!obAns[s.id];}
+  function obItem(t,s,st,cls){const ic=cls==='g'?'<svg class="oi" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>':'<svg class="oi" viewBox="0 0 24 24" fill="none" stroke="var(--warm)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';return `<div class="oitem">${ic}<div class="body"><div class="t">${t}</div><div class="s">${s}</div></div><span class="ost ${cls}">${st}</span></div>`;}
+
+  const OBG={tax:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 13h6M10 17h6"/>',percent:'<path d="M6 18 18 6"/><circle cx="8" cy="8" r="2"/><circle cx="16" cy="16" r="2"/>',heart:'<path d="M12 20s-7-4.4-9.2-8.6C1.4 8.5 3.1 5 6.4 5 8.7 5 12 7.6 12 7.6S15.3 5 17.6 5c3.3 0 5 3.5 3.6 6.4C19 15.6 12 20 12 20z"/>',house:'<path d="M4 10.5 12 4l8 6.5M6 9.5V20h12V9.5"/>',receipt:'<path d="M6 3v18l2.5-1.6L11 21l2.5-1.6L16 21l2-1.6V3l-2 1.6L13.5 3 11 4.6 8.5 3z"/><path d="M9 8h6M9 12h6"/>',globe:'<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 3 2.6 14 0 17M12 3.5c-2.6 3-2.6 14 0 17"/>'};
+  function svgIcon(k,cls){return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${OBG[k]||OBG.tax}</svg>`;}
+  function money(n){return n.toLocaleString('en-US');}
+  // ----- rules engine: onboarding answers -> obligations (illustrative) -----
+  function deriveProfile(a){
+    const earn=a.earn||[];
+    const self=earn.some(e=>/Freelance|Rides|Selling|side hustle|Something/.test(e));
+    const foreign=!!(a.foreign&&a.foreign.indexOf('Yes')===0);
+    const needsPin=(a.pin==='No'||a.pin==='Not sure');
+    const bandTax={"Under KES 20,000":7200,"KES 20,000 – 50,000":12600,"KES 50,000 – 100,000":27000,"Over KES 100,000":54000};
+    const estTax=(a.income&&bandTax[a.income]!=null)?bandTax[a.income]:null;
+    const applies=[];
+    applies.push({key:'tax',g:'tax',t:'Income Tax',s:'Annual return · file every year',st:'Applies',tone:'gray'});
+    if(self)applies.push({key:'biz',g:'percent',t:'Turnover Tax',s:'3% of your gross sales, monthly',st:'Applies',tone:'gray'});
+    applies.push({key:'health',g:'heart',t:'SHIF Health',s:'2.75% of your income',st:'Applies',tone:'gray'});
+    applies.push({key:'house',g:'house',t:'Housing Levy',s:'1.5% of gross',st:'Auto',tone:'gray'});
+    if(self)applies.push({key:'save',g:'receipt',t:'eTIMS invoicing',s:'Needed to claim your deductions',st:'Set up',tone:'orange'});
+    if(foreign)applies.push({key:'tax',g:'globe',t:'Foreign income',s:'USD earnings are taxable in Kenya',st:'Review',tone:'orange'});
+    applies.push({key:'biz',g:'globe',t:'VAT',s:'Below the KES 5M threshold',st:'Not needed yet',tone:'green'});
+    const attention=[];
+    if(needsPin)attention.push({key:'tax',g:'tax',t:'Get your KRA PIN',s:'You need it before you can file anything',badge:'Start',bt:'red'});
+    if(self)attention.push({key:'biz',g:'percent',t:'Turnover Tax due',s:'3% of last month'+(estTax?' — about KES '+money(Math.round(estTax/12)):''),badge:'Soon',bt:'orange'});
+    if(self)attention.push({key:'biz',g:'receipt',t:'Set up eTIMS',s:'Unlocks your expense deductions',badge:'Start',bt:'red'});
+    return {estTax,saved:0,deadline:self?'20 Aug':'30 Jun',attention:attention.slice(0,3),applies,workLabel:earn.length?earn.join(' · '):'Not set',foreign,self,needsPin,earn,_obAns:a};
+  }
+
+  // ---- HUDUMA ALERT: verified clause data (ADR-001) ----
+  const CLAUSES=[
+    {clause_id:"FB2026-WHT-DIGITAL",section:"S.35",severity:"critical",deadline:"2026-08-09",
+     title:{en:"Withholding Tax on Digital Platform Payments",sw:"Kodi ya Kuzuia kwenye Malipo ya Kidijitali"},
+     summary:{en:"Starting July 2026, payments you receive through digital platforms (M-Pesa, Uber, Bolt) will have withholding tax deducted at source.",
+              sw:"Kuanzia Julai 2026, malipo unayopokea kupitia majukwaa ya kidijitali (M-Pesa, Uber, Bolt) yatakatwa kodi ya kuzuia chanzo."},
+     applies_if:{profile_types:["rider"],required_attributes:{receives_digital_payments:true}},
+     action:{url:"https://itax.kra.go.ke/KRA-Portal/",en:"Open iTax →",sw:"Fungua iTax →"},
+     source:{name:"Bowmans Law",url:"https://bowmanslaw.com/insights/kenya-finance-bill-2026/"},verified:"2026-07-26"},
+    {clause_id:"FB2026-FILING-DEADLINE",section:"S.52",severity:"warning",deadline:"2027-04-30",
+     title:{en:"Filing Deadline Reduced: 6 → 4 Months",sw:"Muda wa Kuwasilisha Umepunguzwa: Miezi 6 → 4"},
+     summary:{en:"The deadline to file your annual return after year-end drops from 6 months to 4. Your new deadline is 30 April (not 30 June).",
+              sw:"Muda wa kuwasilisha ripoti yako ya mwaka umepunguzwa kutoka miezi 6 hadi 4. Tarehe yako mpya ni 30 Aprili (si 30 Juni)."},
+     applies_if:{profile_types:["registered_sme"],required_attributes:{has_kra_pin:true,is_registered_business:true}},
+     action:{url:"https://itax.kra.go.ke/KRA-Portal/",en:"Open iTax →",sw:"Fungua iTax →"},
+     source:{name:"Cliffe Dekker Hofmeyr",url:"https://www.cliffedekkerhofmeyr.com/"},verified:"2026-07-26"},
+    {clause_id:"FB2026-TAX-AMNESTY",section:"S.87",severity:"info",deadline:"2026-12-31",
+     title:{en:"Tax Amnesty: Penalties Waived Until 31 Dec 2026",sw:"Msamaha wa Kodi: Adhabu Zimesamehewa Hadi 31 Des 2026"},
+     summary:{en:"If you have unpaid taxes or penalties, register and pay the principal before 31 December 2026 — all penalties and interest are waived.",
+              sw:"Ikiwa una kodi au adhabu ambazo hujalipa, jisajili na ulipe kiasi cha msingi kabla ya 31 Desemba 2026 — adhabu na riba zote zitasamehewa."},
+     applies_if:{profile_types:["rider","registered_sme","informal_trader"],required_attributes:{has_pending_penalties:true}},
+     action:{url:"https://www.ecitizen.go.ke/",en:"Start Registration →",sw:"Anza Usajili →"},
+     source:{name:"CM Advocates LLP",url:"https://cmadvocates.com/"},verified:"2026-07-26"}
+  ];
+  let alertLang='en';
+  const fmtAlertDate=iso=>{const d=new Date(iso);return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});};
+
+  function deriveAlertProfile(a){
+    const earn=a.earn||[];
+    const isRider=earn.some(e=>/Rides/.test(e));
+    const isDigital=earn.some(e=>/Freelance|Rides|Selling/.test(e));
+    const hasPin=a.pin==='Yes';
+    const isBiz=a.biz==='Yes, registered';
+    let pt;
+    if(isBiz&&hasPin) pt='registered_sme';
+    else if(isRider) pt='rider';
+    else pt='informal_trader';
+    return {
+      profile_type:pt,
+      attributes:{
+        has_kra_pin:hasPin,
+        receives_digital_payments:isDigital,
+        is_registered_business:isBiz,
+        has_pending_penalties:!hasPin&&!isBiz
+      }
+    };
+  }
+  function getAlerts(profile){
+    const now=new Date();
+    return CLAUSES.filter(c=>{
+      if(!c.applies_if.profile_types.includes(profile.profile_type)) return false;
+      for(const [k,v] of Object.entries(c.applies_if.required_attributes)){
+        if(profile.attributes[k]!==v) return false;
+      }
+      return new Date(c.deadline)>=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    }).map(c=>{
+      const days=Math.ceil((new Date(c.deadline)-now)/86400000);
+      return {...c,days_remaining:days};
+    }).sort((a,b)=>{
+      const rank={critical:0,warning:1,info:2};
+      return rank[a.severity]-rank[b.severity]||a.days_remaining-b.days_remaining;
+    });
+  }
+  function renderAlerts(obAnswers){
+    const ap=deriveAlertProfile(obAnswers);
+    const alerts=getAlerts(ap);
+    const sec=document.getElementById('alertSection');
+    const list=document.getElementById('alertList');
+    if(!alerts.length){sec.style.display='none';return;}
+    sec.style.display='';
+    const other=alertLang==='en'?'sw':'en';
+    const calSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 9.5h16M8.5 3v4M15.5 3v4"/></svg>';
+    const shieldSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;flex:none"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg>';
+    list.innerHTML=alerts.map((a,i)=>{
+      const soon=a.days_remaining<=14;
+      const sevLabel={critical:'CRITICAL',warning:'WARNING',info:'INFO'}[a.severity];
+      return `<article class="alert-card sev-${a.severity}" role="${a.severity==='critical'?'alert':'region'}" style="animation-delay:${i*80}ms">
+        <div class="a-head"><span class="sev-pill"><span class="sev-dot"></span>${sevLabel}</span><span class="a-days num ${soon?'soon':''}">${a.days_remaining} day${a.days_remaining===1?'':'s'} left</span></div>
+        <h2 class="a-ttl">${a.title[alertLang]}</h2>
+        <p class="a-body">${a.summary[alertLang]}</p>
+        <p class="a-body alt">${a.summary[other]}</p>
+        <div class="a-dl">${calSvg} ${alertLang==='sw'?'Tarehe ya mwisho':'Deadline'}: ${fmtAlertDate(a.deadline)}</div>
+        <a class="a-go" href="${a.action.url}" target="_blank" rel="noopener">${a.action[alertLang]}</a>
+        <div class="a-src">${shieldSvg} ${a.source.name} · ${a.section} · <span class="vf">verified ${a.verified}</span></div>
+      </article>`;
+    }).join('');
+    document.querySelectorAll('#alLang button').forEach(b=>b.classList.toggle('aon',b.dataset.al===alertLang));
+  }
+
+  function renderHome(p){
+    const fin=typeof getFinSummary==='function'?getFinSummary():null;
+    const realSaved=fin&&fin.deductible?fin.deductible:p.saved;
+    document.getElementById('homeEstTax').textContent=p.estTax==null?'—':money(p.estTax);
+    document.getElementById('homeSaved').textContent=money(realSaved);
+    document.getElementById('homeDeadline').textContent=p.deadline;
+    homeN=p.attention.length;
+    document.getElementById('attnList').innerHTML=p.attention.map(x=>`<div class="action" data-detail="${x.key}"><div class="ib">${svgIcon(x.g,'')}</div><div class="body"><div class="t">${x.t}</div><div class="s">${x.s}</div></div><span class="badge ${x.bt}">${x.badge}</span></div>`).join('');
+    document.getElementById('appliesList').innerHTML=p.applies.map(x=>`<div class="row" data-detail="${x.key}">${svgIcon(x.g,'g')}<div class="body"><div class="t">${x.t}</div><div class="s">${x.s}</div></div><span class="st ${x.tone}">${x.st}</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>`).join('');
+    const wl=document.getElementById('workLabel');if(wl)wl.textContent=p.workLabel;
+    if(typeof renderMoney==='function')renderMoney();
+    renderAlerts(p._obAns||{});
+    applyHomeState(homeN===0);
+  }
+  function obRender(){
+    const s=obSteps[obi];
+    obBar.style.width=Math.round(obi/(obSteps.length-1)*100)+'%';
+    obBack.style.visibility=(obi>0&&s.type!=='building'&&s.type!=='reveal')?'visible':'hidden';
+    obSkip.style.visibility=(s.type==='q'&&s.id==='pin')?'visible':'hidden';
+    obStage.innerHTML='';obFoot.innerHTML='';
+    if(s.type==='intro'){
+      obStage.innerHTML=`<div class="intro"><div class="ob-ava">S</div><h1>Karibu — I'm Sitawi</h1><p>Your personal guide to Kenyan tax and policy. I'll show you exactly what applies to you, and help you keep more of what you earn.</p><div class="disclose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>I'm a guide, not KRA. I only explain official rules — I never file or pay on your behalf without asking.</span></div></div>`;
+      obFoot.innerHTML=`<button class="ob-cta" id="ob-next">Get started</button>`;
+      document.getElementById('ob-next').onclick=obAdvance;
+    }else if(s.type==='q'){
+      const sel=obAns[s.id]||(s.multi?[]:null);
+      obStage.innerHTML=`<div class="ob-ava">S</div><div class="ob-q">${s.q}</div><div class="ob-help">${s.help}</div><div class="ob-chips">${s.options.map(o=>{const on=s.multi?sel.includes(o):sel===o;return `<button class="ob-chip ${on?'sel':''}" data-o="${o}">${o}<span class="tick">${obTick}</span></button>`;}).join('')}</div>`;
+      obFoot.innerHTML=`<button class="ob-cta" id="ob-next" ${obAnswered(s)?'':'disabled'}>Continue</button>`;
+      obStage.querySelectorAll('.ob-chip').forEach(c=>c.onclick=()=>{const o=c.dataset.o;if(s.multi){const a=obAns[s.id]||[];obAns[s.id]=a.includes(o)?a.filter(x=>x!==o):[...a,o];}else{obAns[s.id]=o;}obRender();});
+      document.getElementById('ob-next').onclick=()=>obAnswered(s)&&obAdvance();
+    }else if(s.type==='consent'){
+      obStage.innerHTML=`<div class="ob-ava">S</div><div class="consent"><h2>Your data is yours</h2><p class="lead">Before I build your profile, here's my promise — in plain language.</p><div class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg><div><b>Never shared, never sold</b><span>Your income and tax details stay yours, always. No third parties.</span></div></div><div class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><div><b>Encrypted &amp; yours to delete</b><span>Export or delete everything anytime, under the Data Protection Act.</span></div></div><div class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H8l-4 4z"/></svg><div><b>Only used to guide you</b><span>To work out what applies to you and remind you before deadlines.</span></div></div><p class="lead" style="margin-top:14px"><a class="link" href="#security">Read how we protect your data →</a></p></div>`;
+      obFoot.innerHTML=`<button class="ob-cta" id="ob-next">I agree — build my profile</button>`;
+      document.getElementById('ob-next').onclick=obAdvance;
+    }else if(s.type==='building'){
+      obStage.innerHTML=`<div class="building"><div class="spinner"></div><p>Working out what applies to you…</p><small>Checking current KRA rules for your situation</small></div>`;
+      setTimeout(obAdvance,1900);
+    }else if(s.type==='reveal'){
+      obBar.style.width='100%';
+      const p=deriveProfile(obAns);
+      const src=(obAns.earn&&obAns.earn.length?obAns.earn.slice(0,2).join(' + '):'your')+(p.foreign?' income, in KES and USD.':' income.');
+      obStage.innerHTML=`<div class="reveal"><div class="ob-ava">S</div><h2>Here's what applies to you</h2><div class="rsub">Based on ${src}</div><div class="olist">${p.applies.map(x=>obItem(x.t,x.s,x.st,x.tone==='green'?'g':'a')).join('')}</div></div>`;
+      obFoot.innerHTML=`<button class="ob-cta" id="ob-next">Take me in →</button>`;
+      document.getElementById('ob-next').onclick=enterApp;
+    }
+  }
+  function obAdvance(){if(obi<obSteps.length-1){obi++;obRender();}}
+  obBack.onclick=()=>{if(obi>0){obi--;if(obSteps[obi].type==='building')obi--;obRender();}};
+  obSkip.onclick=obAdvance;
+  function enterApp(){renderHome(deriveProfile(obAns));document.getElementById('onboard').style.display='none';document.getElementById('applayer').style.display='flex';showTab('home');}
+  function restartOnboarding(){obi=0;Object.keys(obAns).forEach(k=>delete obAns[k]);document.getElementById('applayer').style.display='none';document.getElementById('onboard').style.display='flex';obRender();}
+  const redo=document.getElementById('redoRow'); if(redo) redo.onclick=restartOnboarding;
+  obRender();
+  // seed a default dashboard (real answers overwrite this on "Take me in")
+  renderHome(deriveProfile({earn:['Freelance / online work','Rides or delivery'],income:'KES 50,000 – 100,000',foreign:'Yes, sometimes',pin:'No',biz:'Not yet'}));
+</script>
